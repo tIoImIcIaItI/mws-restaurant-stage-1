@@ -52,7 +52,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	name.innerHTML = restaurant.name;
 
 	const address = document.getElementById('restaurant-address');
-	address.innerHTML = restaurant.address;
+	address.innerHTML = addressHtml(restaurant.address);
 
 	const image = document.getElementById('restaurant-img');
 	image.className = 'restaurant-img';
@@ -68,6 +68,26 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 	}
 	// fill reviews
 	fillReviewsHTML();
+};
+
+/**
+ * Wrap restaurant address in semantic element and microdata.
+ */
+addressHtml = (address) => {
+	// 171 E Broadway, New York, NY 10002
+	var parts = (address || '').split(', ');
+	const last = parts[2].split(' ');
+
+	var [street, city] = parts;
+	var [state, zip] = last;
+
+	return (
+		'<address itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">' +
+			`<span itemprop="streetAddress">${street}</span>, ` +
+			`<span itemprop="addressLocality">${city}</span>, ` +
+			`<span itemprop="addressRegion">${state}</span> ` +
+			`<span itemprop="postalCode">${zip}</span>` +
+		'</address>');
 };
 
 /**
