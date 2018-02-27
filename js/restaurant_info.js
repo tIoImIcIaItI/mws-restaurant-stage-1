@@ -84,12 +84,24 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 			row.appendChild(day);
 
 			const time = document.createElement('td');
-			time.innerHTML = operatingHours[key];
+			time.innerHTML = hoursHtml(operatingHours[key]);
 			row.appendChild(time);
 
 			hours.appendChild(row);
 		}
 	}
+};
+
+/**
+ * Wrap times of day in <time> elements.
+ */
+hoursHtml = (operatingHours) => {
+	const regex = /(\d{1,2})\:(\d\d)\s(am|pm)/g;
+
+	return (operatingHours || '').replace(regex, (match) => {
+		const date = moment(match, 'h:mm A').format('HH:mm');
+		return `<time datetime="${date}">${match}</time>`;
+	});
 };
 
 /**
