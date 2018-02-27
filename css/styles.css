@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 
 body,td,th,p{
@@ -26,7 +26,7 @@ a:hover, a:focus {
 	text-decoration: none;
 }
 a img{
-	border: none 0px #fff;
+	border: none 0 #fff;
 }
 h1, h2, h3, h4, h5, h6 {
   font-family: Arial, Helvetica, sans-serif;
@@ -222,7 +222,7 @@ nav h1 a {
 }
 #restaurant-address {
   font-size: 12pt;
-  margin: 10px 0px;
+  margin: 10px 0;
 }
 #restaurant-cuisine {
   background-color: #333;
