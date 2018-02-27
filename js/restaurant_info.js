@@ -136,7 +136,7 @@ createReviewHTML = (review) => {
 	li.appendChild(name);
 
 	const date = document.createElement('p');
-	date.innerHTML = review.date;
+	date.innerHTML = reviewDateHtml(review.date);
 	li.appendChild(date);
 
 	const rating = document.createElement('p');
@@ -148,6 +148,15 @@ createReviewHTML = (review) => {
 	li.appendChild(comments);
 
 	return li;
+};
+
+/**
+ * Wrap review dates in <time> elements.
+ */
+reviewDateHtml = (reviewDate) => {
+	// October 26, 2016
+	const date = moment(reviewDate, 'MMMM DD, YYYY').format('YYYY-MM-DD');
+	return `<time datetime="${date}">${reviewDate}</time>`;
 };
 
 /**
