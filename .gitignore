@@ -1,5 +1,10 @@
+node_modules
+
 # Things that should never be committed to a pulic repo, ex. API keys, passwords, etc.
-secrets.txt
+secrets.*
 
 # Dev Tools
 .vs
+
+# Build Outputs
+dist

@@ -1,0 +1,21 @@
+{
+	"root": {
+		"src": "./src",
+		"dist": "./dist"
+	},
+	"data": {
+      "src": "data/**/",
+      "dist": "data",
+      "extensions": "*.+(json)"
+	},
+	"html":{
+		"src": "",
+		"dist": "./",
+		"extensions": "*.+(htm|html)"
+	},
+	"images": {
+      "src": "img/**/",
+      "dist": "img",
+      "extensions": "*.+(jpg|jpeg|gif|png|svg|webp)"
+   }
+}
