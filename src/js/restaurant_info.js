@@ -1,5 +1,6 @@
 import moment from 'moment';
 import DBHelper from './dbhelper';
+import { addressHtml } from './address';
 
 export default class RestaurantInfo {
 
@@ -59,7 +60,7 @@ export default class RestaurantInfo {
 		name.innerHTML = restaurant.name;
 
 		const address = this.document.getElementById('restaurant-address');
-		address.innerHTML = this.addressHtml(restaurant.address);
+		address.innerHTML = addressHtml(restaurant.address);
 
 		const image = this.document.getElementById('restaurant-img');
 		image.className = 'restaurant-img';
@@ -75,26 +76,6 @@ export default class RestaurantInfo {
 		}
 		// fill reviews
 		this.fillReviewsHTML();
-	};
-
-	/**
-	 * Wrap restaurant address in semantic element and microdata.
-	 */
-	addressHtml = (address) => {
-		// 171 E Broadway, New York, NY 10002
-		var parts = (address || '').split(', ');
-		const last = parts[2].split(' ');
-
-		var [street, city] = parts;
-		var [state, zip] = last;
-
-		return (
-			'<address itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">' +
-			`<span itemprop="streetAddress">${street}</span>, ` +
-			`<span itemprop="addressLocality">${city}</span>, ` +
-			`<span itemprop="addressRegion">${state}</span> ` +
-			`<span itemprop="postalCode">${zip}</span>` +
-			'</address>');
 	};
 
 	/**
