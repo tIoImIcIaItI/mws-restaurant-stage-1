@@ -22,6 +22,6 @@ export function server() {
     browser.init(config);
 
     gulp.watch('src/js/*.js').on('change', () => browser.reload());
-    gulp.watch('src/html/*.html').on('change', () => browser.reload());
+    gulp.watch('src/*.html').on('change', () => browser.reload());
     gulp.watch('src/styles/*.css').on('change', () => browser.reload());
 }
