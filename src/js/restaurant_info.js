@@ -1,6 +1,8 @@
-import moment from 'moment';
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
+import { createReviewElement } from './review';
+import { fillHoursHtml } from './hours';
+import '../styles/details.css';
 
 export default class RestaurantInfo {
 
@@ -72,44 +74,14 @@ export default class RestaurantInfo {
 
 		// fill operating hours
 		if (restaurant.operating_hours) {
-			this.fillRestaurantHoursHTML();
+			fillHoursHtml(
+				this.document, 
+				this.document.getElementById('restaurant-hours'), 
+				this.restaurant.operating_hours);
 		}
+
 		// fill reviews
 		this.fillReviewsHTML();
-	};
-
-	/**
-	 * Create restaurant operating hours HTML table and add it to the webpage.
-	 */
-	fillRestaurantHoursHTML = (operatingHours = this.restaurant.operating_hours) => {
-		const hours = this.document.getElementById('restaurant-hours');
-		for (let key in operatingHours) {
-			if (operatingHours.hasOwnProperty(key)) {
-				const row = this.document.createElement('tr');
-
-				const day = this.document.createElement('td');
-				day.innerHTML = key;
-				row.appendChild(day);
-
-				const time = this.document.createElement('td');
-				time.innerHTML = this.hoursHtml(operatingHours[key]);
-				row.appendChild(time);
-
-				hours.appendChild(row);
-			}
-		}
-	};
-
-	/**
-	 * Wrap times of day in <time> elements.
-	 */
-	hoursHtml = (operatingHours) => {
-		const regex = /(\d{1,2})\:(\d\d)\s(am|pm)/g;
-
-		return (operatingHours || '').replace(regex, (match) => {
-			const date = moment(match, 'h:mm A').format('HH:mm');
-			return `<time datetime="${date}">${match}</time>`;
-		});
 	};
 
 	/**
@@ -127,44 +99,14 @@ export default class RestaurantInfo {
 			container.appendChild(noReviews);
 			return;
 		}
+
 		const ul = this.document.getElementById('reviews-list');
 		reviews.forEach(review => {
-			ul.appendChild(this.createReviewHTML(review));
+			const li = this.document.createElement('li');
+			li.appendChild(createReviewElement(this.document, review));
+			ul.appendChild(li);
 		});
 		container.appendChild(ul);
-	};
-
-	/**
-	 * Create review HTML and add it to the webpage.
-	 */
-	createReviewHTML = (review) => {
-		const li = this.document.createElement('li');
-		const name = this.document.createElement('p');
-		name.innerHTML = review.name;
-		li.appendChild(name);
-
-		const date = this.document.createElement('p');
-		date.innerHTML = this.reviewDateHtml(review.date);
-		li.appendChild(date);
-
-		const rating = this.document.createElement('p');
-		rating.innerHTML = `Rating: ${review.rating}`;
-		li.appendChild(rating);
-
-		const comments = this.document.createElement('p');
-		comments.innerHTML = review.comments;
-		li.appendChild(comments);
-
-		return li;
-	};
-
-	/**
-	 * Wrap review dates in <time> elements.
-	 */
-	reviewDateHtml = (reviewDate) => {
-		// October 26, 2016
-		const date = moment(reviewDate, 'MMMM DD, YYYY').format('YYYY-MM-DD');
-		return `<time datetime="${date}">${reviewDate}</time>`;
 	};
 
 	/**
