@@ -7,9 +7,8 @@
     "data": "gulp data --require babel-register",
     "html": "gulp html --require babel-register",
     "img": "gulp images --require babel-register",
-    "dev": "gulp --require babel-register --gulpfile tasks",
+    "start": "gulp --require babel-register --gulpfile tasks",
     "build": "set NODE_ENV=production & gulp build --require babel-register --gulpfile tasks",
-    "start": "webpack-dev-server --hot --inline",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
