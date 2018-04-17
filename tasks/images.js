@@ -3,6 +3,7 @@ import path from 'path';
 import notify from 'gulp-notify';
 import plumber from 'gulp-plumber';
 import { reload } from 'browser-sync';
+import imagemin from 'gulp-imagemin';
 import config from './config';
 
 const typeConfig = config.images;
@@ -13,7 +14,7 @@ const images = () =>
 	gulp.
 		src(path.join(base, typeConfig.extensions), { base: base }).
 		pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
-		// TODO: process images for production.
+		pipe(imagemin([imagemin.gifsicle(), imagemin.jpegtran(), imagemin.optipng(), imagemin.svgo()], { verbose: true })).
 		pipe(gulp.dest(path.join(config.root.dist, typeConfig.dist))).
 		pipe(reload({ stream: true }));
 

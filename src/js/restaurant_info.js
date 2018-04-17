@@ -2,6 +2,7 @@ import DBHelper from './dbhelper';
 import { addressHtml } from './address';
 import { createReviewElement } from './review';
 import { fillHoursHtml } from './hours';
+import { buildRestaurantImage } from './image';
 import '../styles/details.css';
 
 export default class RestaurantInfo {
@@ -64,10 +65,9 @@ export default class RestaurantInfo {
 		const address = this.document.getElementById('restaurant-address');
 		address.innerHTML = addressHtml(restaurant.address);
 
+		const src = DBHelper.imageUrlForRestaurant(restaurant);
 		const image = this.document.getElementById('restaurant-img');
-		image.className = 'restaurant-img';
-		image.src = DBHelper.imageUrlForRestaurant(restaurant);
-		image.alt = restaurant.name;
+		buildRestaurantImage(restaurant, image, src, 'hero');
 
 		const cuisine = this.document.getElementById('restaurant-cuisine');
 		cuisine.innerHTML = restaurant.cuisine_type;
@@ -75,8 +75,8 @@ export default class RestaurantInfo {
 		// fill operating hours
 		if (restaurant.operating_hours) {
 			fillHoursHtml(
-				this.document, 
-				this.document.getElementById('restaurant-hours'), 
+				this.document,
+				this.document.getElementById('restaurant-hours'),
 				this.restaurant.operating_hours);
 		}
 

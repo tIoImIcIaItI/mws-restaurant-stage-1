@@ -1,5 +1,6 @@
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
+import { buildRestaurantImage } from './image';
 
 export default class Main {
 
@@ -162,9 +163,8 @@ export default class Main {
 		info.className = 'restaurant-info';
 		{
 			const image = document.createElement('img');
-			image.className = 'restaurant-img';
-			image.src = DBHelper.imageUrlForRestaurant(restaurant);
-			image.alt = restaurant.name;
+			const src = DBHelper.imageUrlForRestaurant(restaurant);
+			buildRestaurantImage(restaurant, image, src, 'thumb');
 			info.append(image);
 
 			const location = document.createElement('div');
