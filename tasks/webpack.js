@@ -8,23 +8,26 @@ import process from 'process'
 const isProduction = (process.env.NODE_ENV === 'production')
 
 let config = {
-	mode: 'development',//process.env.NODE_ENV,
-	//entry: './js/index.js',
+	mode: 'development',// TODO: process.env.NODE_ENV,
 	entry: isProduction ?
 		{
-			main: './js/index.js'
+			bundle: './js/index.js',
+			sw: './js/sw.js'
 		} :
 		{
-			main: [
+			bundle: [
 				'./js/index.js',
 				'webpack/hot/dev-server',
 				'webpack-hot-middleware/client',
-			]
+			],
+			sw: './js/sw.js'
 		},
 
 	output: {
-		filename: './js/bundle.js',
-		path: path.resolve(__dirname, '../dist')
+		publicPath: '/',
+		path: path.resolve(__dirname, '../dist'),
+		filename: './[name].js',
+		globalObject: 'this' // workaround for webpack accessing window in service worker
 	},
 
 	context: path.resolve(__dirname, '../src'),
@@ -51,7 +54,7 @@ let config = {
 				use: ['style-loader', 'css-loader']
 			}
 		]
-	}		
+	}
 };
 
 function scripts() {

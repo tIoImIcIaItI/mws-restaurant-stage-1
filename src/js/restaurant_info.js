@@ -7,28 +7,56 @@ import '../styles/details.css';
 
 export default class RestaurantInfo {
 
-	constructor(document) {
+	constructor(window, document) {
+		this.window = window;
 		this.document = document;
-		// let restaurant;
-		// var map;
+
+		this.initialize();
 	}
+
+	initialize = () => {
+		this.document.addEventListener('DOMContentLoaded', (event) => {
+
+			this.fetchRestaurantFromURL((error, restaurant) => {
+				if (error) {
+					console.error(error);
+				} else {
+					this.fillBreadcrumb();
+
+					if (this.window.google && !this.map)
+						initMap();
+				}
+			});
+		});
+	}
+
+	/**
+	 * Map marker for a restaurant.
+	 */
+	mapMarkerForRestaurant = (restaurant, map) => {
+		const marker = new this.window.google.maps.Marker({
+			position: restaurant.latlng,
+			title: restaurant.name,
+			url: DBHelper.urlForRestaurant(restaurant),
+			map: map,
+			animation: this.window.google.maps.Animation.DROP
+		});
+		return marker;
+	}
+
 	/**
 	 * Initialize Google map, called from HTML.
 	 */
 	initMap = () => {
-		this.fetchRestaurantFromURL((error, restaurant) => {
-			if (error) { // Got an error!
-				console.error(error);
-			} else {
-				this.map = new google.maps.Map(this.document.getElementById('map'), {
-					zoom: 16,
-					center: restaurant.latlng,
-					scrollwheel: false
-				});
-				this.fillBreadcrumb();
-				DBHelper.mapMarkerForRestaurant(this.restaurant, this.map);
-			}
+		if (!this.restaurant || !this.window.google) return;
+
+		this.map = new this.window.google.maps.Map(this.document.getElementById('map'), {
+			zoom: 16,
+			center: this.restaurant.latlng,
+			scrollwheel: false
 		});
+
+		this.mapMarkerForRestaurant(this.restaurant, this.map);
 	};
 
 	/**
