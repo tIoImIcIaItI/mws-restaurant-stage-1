@@ -95,11 +95,21 @@
 	width: 100%;
 }
 
-#restaurant-container, #reviews-container {
+#restaurant-body {
+  /*display:flex;
+  flex-direction: row;*/
+}
+
+#restaurant-details, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   /*padding: 140px 40px 30px;*/
   /*width: 100%;*/
+}
+
+#restaurant-details{
+  /*display:flex;
+  flex-direction: column;*/
 }
 
 #reviews-container {
@@ -138,4 +148,25 @@
 
 #restaurant-hours td {
   color: #666;
+}
+
+/*ROOMY*/
+@media screen and (min-width: 43em) {
+
+  #restaurant-details {
+    flex-direction: row;
+  }
+
+  #restaurant-location {
+    flex-grow: 1;
+  }
+
+  #restaurant-body {
+    display:flex;
+    flex-direction: row;
+  }
+  
+  #restaurant-details {
+    min-width: 20em;
+  }
 }

@@ -10,46 +10,48 @@
 <body class="inside">
 
     <header>
-        <!-- Beginning nav -->
         <nav>
             <h1><a href="/">Restaurant Reviews</a></h1>
         </nav>
-        <!-- Beginning breadcrumb -->
+
         <ul id="breadcrumb">
             <li><a href="/">Home</a></li>
         </ul>
-        <!-- End breadcrumb -->
-        <!-- End nav -->
     </header>
-    
+
     <main id="maincontent">
-        
-        <!-- Beginning restaurant -->
-        <section id="restaurant-container">
 
+        <section id="restaurant-header">
             <h1 id="restaurant-name"></h1>
-
             <img id="restaurant-img">
-
             <p id="restaurant-cuisine"></p>
+        </section>
 
-            <table id="restaurant-hours"></table>
+        <div id="restaurant-body">
 
-            <p id="restaurant-address"></p>
+            <section id="restaurant-details">
 
-            <div id="map-container">
-                <div id="map"></div>
+                <div id="restaurant-details">
+                    <div id="restaurant-location">
+
+                        <p id="restaurant-address"></p>
+
+                        <div id="map-container">
+                            <div id="map"></div>
+                        </div>
+
+                        <div>
+                            <table id="restaurant-hours"></table>
+                        </div>
+
+                    </div>
+            </section>
+
+            <section id="reviews-container">
+                <ul id="reviews-list"></ul>
+            </section>
+
             </div>
-
-        </section>
-        <!-- end restaurant -->
-        
-        <!-- Beginning reviews -->
-        <section id="reviews-container">
-            <ul id="reviews-list"></ul>
-        </section>
-        <!-- End reviews -->
-        
     </main>
 
     <footer id="footer">
@@ -60,4 +62,5 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script>
 
 </body>
+
 </html>
