@@ -150,6 +150,7 @@ export default class Main {
 	 */
 	createRestaurantHTML = (restaurant) => {
 		const li = this.document.createElement('li');
+		li.className = "card card-1";
 
 		const article = this.document.createElement('article');
 		li.append(article);
@@ -182,7 +183,7 @@ export default class Main {
 		article.append(info);
 
 		const more = this.document.createElement('a');
-		more.innerHTML = 'View Details';
+		more.innerHTML = `<span aria-hidden="true">View Details</span><span class="sr-only">${restaurant.name}</span>`;
 		more.href = DBHelper.urlForRestaurant(restaurant);
 		article.append(more);
 

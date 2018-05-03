@@ -2,10 +2,13 @@
 <html lang="en">
 
 <head>
+    <title>Restaurant Reviews</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-    <!--<link rel="stylesheet" href="css/styles.css">-->
-    <title>Restaurant Reviews</title>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.11/js/all.js" integrity="sha384-ImVoB8Er8knetgQakxuBS4G3RSkyD8IZVVQCAnmRJrDwqJFYUE4YOv+DbIofcO9C"
+        crossorigin="anonymous">
+
+        </script>
 </head>
 
 <body>
@@ -18,19 +21,33 @@
     <main id="maincontent">
 
         <section id="map-container">
-            <div id="map"></div>
+            <div id="map" tabindex="0"></div>
         </section>
 
         <section>
-            
+
             <div class="filter-options">
+
                 <h2>Filter Results</h2>
-                <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-                    <option value="all">All Neighborhoods</option>
-                </select>
-                <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-                    <option value="all">All Cuisines</option>
-                </select>
+
+                <div>
+                    <i class="far fa-map"></i>
+                    <span id="neighborhoods-label" class="sr-only">Neighborhoods</span>
+                    <select id="neighborhoods-select" name="neighborhoods" aria-labelledby="neighborhoods-label"
+                        onchange="updateRestaurants()">
+                        <option value="all">All Neighborhoods</option>
+                    </select>
+                </div>
+
+                <div>
+                    <i class="fas fa-utensils"></i>
+                    <span id="cuisines-label" class="sr-only">Cuisines</span>
+                    <select id="cuisines-select" name="cuisines" aria-labelledby="cuisines-label"
+                        onchange="updateRestaurants()">
+                        <option value="all">All Cuisines</option>
+                    </select>
+                </div>
+
             </div>
 
             <ul id="restaurants-list"></ul>

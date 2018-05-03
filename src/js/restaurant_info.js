@@ -117,9 +117,6 @@ export default class RestaurantInfo {
 	 */
 	fillReviewsHTML = (reviews = this.restaurant.reviews) => {
 		const container = this.document.getElementById('reviews-container');
-		// const title = this.document.createElement('h2');
-		// title.innerHTML = 'Reviews';
-		// container.appendChild(title);
 
 		if (!reviews) {
 			const noReviews = this.document.createElement('p');

@@ -113,6 +113,12 @@
   flex-direction: column;*/
 }
 
+#restaurant-hours td {
+  /*color: #666;*/
+}
+
+/* ====================== Reviews ================================= */
+
 #reviews-container {
   /*padding: 30px 40px 80px;*/
 }
@@ -139,8 +145,8 @@
   margin: 0 0 1em;
 }
 
-#restaurant-hours td {
-  /*color: #666;*/
+.review-name {
+  font-weight: 700;
 }
 
 /*ROOMY*/
