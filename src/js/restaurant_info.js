@@ -4,6 +4,7 @@ import { createReviewElement } from './review';
 import { fillHoursHtml } from './hours';
 import { buildRestaurantImage } from './image';
 import '../styles/details.css';
+import renderCopyright from './copyright';
 
 export default class RestaurantInfo {
 
@@ -27,6 +28,8 @@ export default class RestaurantInfo {
 						initMap();
 				}
 			});
+
+			this.document.getElementById('footer').innerHTML = renderCopyright();
 		});
 	}
 
@@ -89,6 +92,9 @@ export default class RestaurantInfo {
 	fillRestaurantHTML = (restaurant = this.restaurant) => {
 		const name = this.document.getElementById('restaurant-name');
 		name.innerHTML = restaurant.name;
+
+		const hood = this.document.getElementById('restaurant-neighborhood');
+		hood.innerHTML = restaurant.neighborhood;
 
 		const address = this.document.getElementById('restaurant-address');
 		address.innerHTML = addressHtml(restaurant.address);

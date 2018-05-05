@@ -13,8 +13,7 @@ if (window.location.pathname.includes('/restaurant.html')) {
 	var main = new Main(window, document);
 	window.initMap = main.initMap;
 	window.updateRestaurants = main.updateRestaurants;
-	main.updateRestaurants();
-	
+		
 }
 
 registerServiceWorker(navigator, window);

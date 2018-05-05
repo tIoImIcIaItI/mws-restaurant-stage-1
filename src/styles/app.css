@@ -1,6 +1,10 @@
 ﻿@charset "utf-8";
 /* CSS Document */
 
+* {
+  box-sizing: border-box;
+}
+
 /* https://webaim.org/techniques/css/invisiblecontent/ */
 .sr-only { 
   position:absolute;
@@ -12,13 +16,13 @@
 }
 
 body,td,th,p{
-	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10pt;
 	color: #333;
 	line-height: 1.5;
 }
 
 body {
+  font-family: 'Roboto', sans-serif;
 	background-color: #fdfdfd;
 	margin-top: 0;
   margin-bottom: 0;
@@ -36,34 +40,15 @@ blockquote {
   margin: 0;
 }
 
-/*blockquote:before {
-    padding: 8px;
-    color: #ccc;
-    content: "\275D";
-}*/
-
-/*ul, li {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10pt;
-	color: #333;
-}*/
+address {
+  font-style: initial;
+}
 
 a {
-	/*color: orange;*/
 	text-decoration: none;
 }
 
-/*a:hover, a:focus {
-	color: #3397db;
-	text-decoration: none;
-}*/
-
-/*a img{
-	border: none 0;
-}*/
-
 h1, h2, h3, h4, h5, h6 {
-  /*font-family: Arial, Helvetica, sans-serif;*/
   margin: 0;
 }
 
@@ -82,7 +67,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   color: snow;
   font-size: 8pt;
   letter-spacing: 1px;
-  padding: 25px;
+  padding: 1em;
   text-align: center;
   text-transform: uppercase;
 }
@@ -92,24 +77,18 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
     text-decoration: none;
 }
 
-#footer a:hover {
+#footer a:hover, a:focus {
     color: white;
     text-decoration: underline;
 }
 
 /* ====================== Navigation ====================== */
 #site-header {
+  padding: 1em 0;
   width: 100%;
-  height: 80px;
   color: snow;
   background-color: #252831;
   text-align:center;
-  height: 12vh;
-  max-height: 4em;
-}
-
-#site-header h1 {
-  margin: auto;
 }
 
 #site-header h1 a {
@@ -131,7 +110,6 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 .filter-options {
   color: #346;
   width: 100%;
-  /*background-color: #3397DB;*/
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -141,11 +119,6 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 
 .filter-options h2 {
   display: none;
-  /*color: white;
-  font-size: 1rem;
-  font-weight: normal;
-  line-height: 1;
-  margin: 0 20px;*/
 }
 
 .filter-options select {
@@ -210,9 +183,6 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 
 #restaurants-list li h1 {
-  /*color: #f18200;*/
-  font-family: Arial,sans-serif;
-  font-size: 14pt;
   font-weight: 200;
   letter-spacing: 0.1em;
   line-height: 1.3;
@@ -240,7 +210,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-transform: uppercase;
 }
 
-/*SMALL AND TIGHT*/
+/* SMALL AND TIGHT */
 @media screen and (max-width: 25em) {
 
   #restaurants-list li h1 {
@@ -257,7 +227,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 
 }
 
-/*ROOMY*/
+/* ROOMY */
 @media screen and (min-width: 43em) {
 
   #restaurants-list {

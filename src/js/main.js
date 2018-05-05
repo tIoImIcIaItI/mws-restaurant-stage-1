@@ -1,6 +1,7 @@
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
 import { buildRestaurantImage } from './image';
+import renderCopyright from './copyright';
 
 export default class Main {
 
@@ -17,8 +18,12 @@ export default class Main {
 	 */
 	initialize = () => {
 		this.document.addEventListener('DOMContentLoaded', (event) => {
-			this.fetchNeighborhoods();
-			this.fetchCuisines();
+
+			Promise.
+				all([ this.fetchNeighborhoods(),this.fetchCuisines()]).
+				then(_ => this.updateRestaurants());
+
+			this.document.getElementById('footer').innerHTML = renderCopyright();
 		});
 	}
 
@@ -44,13 +49,19 @@ export default class Main {
 	 * Fetch all neighborhoods and set their HTML.
 	 */
 	fetchNeighborhoods = () => {
-		DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-			if (error) { // Got an error
-				console.error(error);
-			} else {
-				this.neighborhoods = neighborhoods;
-				this.fillNeighborhoodsHTML();
-			}
+		return new Promise((resolve, reject) => {
+
+			DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+				if (error) { // Got an error
+					console.error(error);
+					reject(error);
+				} else {
+					this.neighborhoods = neighborhoods;
+					this.fillNeighborhoodsHTML();
+					resolve(neighborhoods);
+				}
+			});
+
 		});
 	};
 
@@ -71,13 +82,19 @@ export default class Main {
 	 * Fetch all cuisines and set their HTML.
 	 */
 	fetchCuisines = () => {
-		DBHelper.fetchCuisines((error, cuisines) => {
-			if (error) { // Got an error!
-				console.error(error);
-			} else {
-				this.cuisines = cuisines;
-				this.fillCuisinesHTML();
-			}
+		return new Promise((resolve, reject) => {
+
+			DBHelper.fetchCuisines((error, cuisines) => {
+				if (error) { // Got an error!
+					console.error(error);
+					reject(error);
+				} else {
+					this.cuisines = cuisines;
+					this.fillCuisinesHTML();
+					resolve(cuisines);
+				}
+			});
+
 		});
 	};
 
@@ -102,8 +119,12 @@ export default class Main {
 		const cSelect = this.document.getElementById('cuisines-select');
 		const nSelect = this.document.getElementById('neighborhoods-select');
 
+		if (!cSelect || !nSelect) return;
+
 		const cIndex = cSelect.selectedIndex;
 		const nIndex = nSelect.selectedIndex;
+
+		if (!cSelect[cIndex] || !nSelect[nIndex]) return;
 
 		const cuisine = cSelect[cIndex].value;
 		const neighborhood = nSelect[nIndex].value;
@@ -123,6 +144,7 @@ export default class Main {
 	 * Clear current restaurants, their HTML and remove their map markers.
 	 */
 	resetRestaurants = (restaurants) => {
+		
 		// Remove all restaurants
 		this.restaurants = [];
 		const ul = this.document.getElementById('restaurants-list');

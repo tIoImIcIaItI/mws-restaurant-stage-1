@@ -5,6 +5,7 @@
     <title>Restaurant Info</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300i,400" rel="stylesheet">
     <script defer 
         src="https://use.fontawesome.com/releases/v5.0.11/js/all.js" 
         integrity="sha384-ImVoB8Er8knetgQakxuBS4G3RSkyD8IZVVQCAnmRJrDwqJFYUE4YOv+DbIofcO9C"
@@ -47,7 +48,10 @@
                     <h2 id="location-header">
                         <p><i class="far fa-building"></i><span>Location</span></p>
                     </h2>
-                    <p id="restaurant-address"></p>
+                    <p>
+                    <span id="restaurant-neighborhood"></span>
+                    <span id="restaurant-address"></span>
+                    </p>
 
                     <h2 id="map-header">
                         <p><i class="far fa-map"></i><span>Map</span></p>
@@ -77,8 +81,7 @@
             </div>
     </main>
 
-    <footer id="footer">
-        Copyright (c) 2018 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    <footer id="footer" role="region" aria-live="off">        
     </footer>
 
     <script type="text/javascript" src="/bundle.js" charset="utf-8"></script>
