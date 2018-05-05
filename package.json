@@ -7,7 +7,7 @@
     "data": "gulp data --require babel-register",
     "html": "gulp html --require babel-register",
     "img": "gulp images --require babel-register",
-    "start": "gulp --require babel-register --gulpfile tasks",
+    "start": "set NODE_ENV=development& gulp --require babel-register --gulpfile tasks",
     "build": "set NODE_ENV=production& gulp build --require babel-register --gulpfile tasks",
     "test": "echo \"Error: no test specified\" && exit 1",
     "srcset": "gulp srcset --require babel-register",
