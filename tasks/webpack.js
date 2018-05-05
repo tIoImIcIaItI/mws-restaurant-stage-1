@@ -3,12 +3,12 @@ import path from 'path'
 import webpack from 'webpack'
 import process from 'process'
 
-//console.log(process.env);
-
 const isProduction = (process.env.NODE_ENV === 'production')
 
+console.log(`ENV: [${process.env.NODE_ENV}] [${isProduction}]`);
+
 let config = {
-	mode: 'development',// TODO: process.env.NODE_ENV,
+	mode: process.env.NODE_ENV,// TODO: process.env.NODE_ENV,
 	entry: isProduction ?
 		{
 			bundle: './js/index.js',
@@ -33,7 +33,7 @@ let config = {
 	context: path.resolve(__dirname, '../src'),
 
 	plugins: isProduction ?
-		[new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }), new webpack.optimize.UglifyJsPlugin()] :
+		[new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' })] :
 		[new webpack.HotModuleReplacementPlugin()],
 
 	module: {
@@ -65,34 +65,6 @@ function scripts() {
 		resolve();
 	}));
 
-	// //mode: 'development',
-	// entry: "./src/index.js",
-	// output: {
-	// 	path: __dirname,
-	// 	filename: "bundle.js"
-	// },
-	// module: {
-	// 	rules: [
-	// 		// {
-	// 		// 	test: /\.js$/,
-	// 		// 	exclude: /node_modules/,
-	// 		// 	use: ['eslint-loader']
-	// 		// },
-	// 		{
-	// 			test: /\.js$/, exclude: /node_modules/, loader: "babel-loader",
-	// 			query: {
-	// 				presets: ['es2015', 'stage-2']
-	// 			}
-	// 		},
-	// 		{
-	// 			test: /\.css$/,
-	// 			use: ['style-loader', 'css-loader']
-	// 		}
-	// 	]
-	// },
-	// devServer: {
-	// 	port: 8000
-	// },
 };
 
 module.exports = { config, scripts };
