@@ -10,7 +10,7 @@ In **Stage One**, a static design that lacks accessibility is converted to be re
 It also adds a service worker to begin the process of creating a seamless offline experience for  users.
 
 ### Building
-Open a command prompt (terminal) at the [root folder](/).
+Open a command prompt (terminal) at the root folder (containing `package.json`).
 
 Run `npm i` then `npm run build`.
 
