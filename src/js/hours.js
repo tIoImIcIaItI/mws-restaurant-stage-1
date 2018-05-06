@@ -9,7 +9,8 @@ const hoursHtml = (operatingHours) => {
 	return (operatingHours || '').
 		replace(regex, (match) => {
 			const date = moment(match, 'h:mm A').format('HH:mm');
-			return `<time datetime="${date}">${match}</time>`; }).
+			return `<time datetime="${date}">${match}</time>`;
+		}).
 		replace(' - ', '<span class="sr-only"> through </span><span aria-hidden="true"> - </span>');
 };
 

@@ -3,7 +3,7 @@ import path from 'path'
 import webpack from 'webpack'
 import process from 'process'
 
-const isProduction = (process.env.NODE_ENV === 'production')
+const isProduction = (process.env.NODE_ENV === 'production');
 
 console.log(`ENV: [${process.env.NODE_ENV}] [${isProduction}]`);
 
@@ -18,7 +18,7 @@ let config = {
 			bundle: [
 				'./js/index.js',
 				'webpack/hot/dev-server',
-				'webpack-hot-middleware/client',
+				'webpack-hot-middleware/client'
 			],
 			sw: './js/sw.js'
 		},
@@ -44,7 +44,7 @@ let config = {
 			// 	use: ['eslint-loader']
 			// },
 			{
-				test: /\.js$/, exclude: /node_modules/, loader: "babel-loader",
+				test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader',
 				query: {
 					presets: ['es2015', 'stage-2']
 				}

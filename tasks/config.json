@@ -1,55 +1,55 @@
 {
-	"root": {
-		"src": "./src",
-		"dist": "./dist"
-	},
-	"data": {
-		"src": "data/**/",
-		"dist": "data",
-		"extensions": "*.+(json)"
-	},
-	"html": {
-		"src": "",
-		"dist": "./",
-		"extensions": "*.+(htm|html)"
-	},
-	"srcset": {
-		"src": "masters/**/",
-		"dist": "img",
-		"extensions": "*.+(jpg|jpeg|gif|png|svg|webp)",
-		"groups": {
-			"thumb": [
-				{
-					"width": 100,
-					"tag": "xs",
-					"size": "(max-width: 43em) 79px"
-				},
-				{
-					"width": 312,
-					"tag": "sm",
-					"size": "294px"
-				}
-			],
-			"hero": [
-				{
-					"width": 100,
-					"tag": "xs"
-				},
-				{
-					"width": 312,
-					"tag": "sm"
-				},
-				{
-					"width": 1024,
-					"tag": "lg",
-					"size": "100vw"
-				}
-			]
-		}
-	},
-	"images": {
-		"src": "img/**/",
-		"dist": "img",
-		"extensions": "*.+(jpg|jpeg|gif|png|svg|webp)"
-	}
+    "root": {
+        "src": "./src",
+        "dist": "./dist"
+    },
+    "data": {
+        "src": "data/**/",
+        "dist": "data",
+        "extensions": "*.+(json)"
+    },
+    "html": {
+        "src": "",
+        "dist": "./",
+        "extensions": "*.+(htm|html)"
+    },
+    "srcset": {
+        "src": "masters/**/",
+        "dist": "img",
+        "extensions": "*.+(jpg|jpeg|gif|png|svg|webp)",
+        "groups": {
+            "thumb": [
+                {
+                    "width": 100,
+                    "tag": "xs",
+                    "size": "(max-width: 43em) 79px"
+                },
+                {
+                    "width": 312,
+                    "tag": "sm",
+                    "size": "294px"
+                }
+            ],
+            "hero": [
+                {
+                    "width": 100,
+                    "tag": "xs"
+                },
+                {
+                    "width": 312,
+                    "tag": "sm"
+                },
+                {
+                    "width": 1024,
+                    "tag": "lg",
+                    "size": "100vw"
+                }
+            ]
+        }
+    },
+    "images": {
+        "src": "img/**/",
+        "dist": "img",
+        "extensions": "*.+(jpg|jpeg|gif|png|svg|webp)"
+    }
 }

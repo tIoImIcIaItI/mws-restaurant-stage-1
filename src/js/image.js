@@ -9,7 +9,7 @@ export const buildRestaurantImage = (restaurant, image, src, group) => {
 			map(set => `${base}-${set.tag}.jpg ${set.width}w`).
 			join(', ');
 
-	const sizes = 
+	const sizes =
 		config.srcset.groups[group].
 			map(set => set.size ? `${set.size}` : null).
 			filter(s => s != null).

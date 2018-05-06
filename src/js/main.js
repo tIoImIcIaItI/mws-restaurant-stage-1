@@ -20,7 +20,7 @@ export default class Main {
 		this.document.addEventListener('DOMContentLoaded', (event) => {
 
 			Promise.
-				all([ this.fetchNeighborhoods(),this.fetchCuisines()]).
+				all([this.fetchNeighborhoods(), this.fetchCuisines()]).
 				then(_ => this.updateRestaurants());
 
 			this.document.getElementById('footer').innerHTML = renderCopyright();
@@ -35,7 +35,7 @@ export default class Main {
 			lat: 40.722216,
 			lng: -73.987501
 		};
-		
+
 		this.map = new this.window.google.maps.Map(this.document.getElementById('map'), {
 			zoom: 12,
 			center: loc,
@@ -44,7 +44,7 @@ export default class Main {
 
 		this.addMarkersToMap();
 	};
-	
+
 	/**
 	 * Fetch all neighborhoods and set their HTML.
 	 */
@@ -144,7 +144,7 @@ export default class Main {
 	 * Clear current restaurants, their HTML and remove their map markers.
 	 */
 	resetRestaurants = (restaurants) => {
-		
+
 		// Remove all restaurants
 		this.restaurants = [];
 		const ul = this.document.getElementById('restaurants-list');
@@ -164,7 +164,7 @@ export default class Main {
 		const ul = document.getElementById('restaurants-list');
 		restaurants.forEach(restaurant => {
 			ul.append(this.createRestaurantHTML(restaurant));
-		});		
+		});
 	};
 
 	/**
@@ -172,7 +172,7 @@ export default class Main {
 	 */
 	createRestaurantHTML = (restaurant) => {
 		const li = this.document.createElement('li');
-		li.className = "card card-1";
+		li.className = 'card card-1';
 
 		const article = this.document.createElement('article');
 		li.append(article);

@@ -3,118 +3,117 @@ h2 p {
     margin: 1em 0 0.25em 0;
 }
 
-h2 p span {
-  margin-left: 0.5em;
-  letter-spacing: 0.1em;
-}
+    h2 p span {
+        margin-left: 0.5em;
+        letter-spacing: 0.1em;
+    }
 
 /* ====================== breadcrumb ============================== */
 #breadcrumb {
     list-style: none;
     font-size: 1em;
     margin: 0;
-    widows: 100%;
 }
 
-#breadcrumb li {
-    display: inline;
-}
+    #breadcrumb li {
+        display: inline;
+    }
 
-/* Add a slash symbol (/) before/behind each list item */
-#breadcrumb li+li:before {
-    padding: 8px;
-    color: #ccc;
-    content: "/\00a0";
-}
+        /* Add a slash symbol (/) before/behind each list item */
+        #breadcrumb li + li:before {
+            padding: 8px;
+            color: #ccc;
+            content: "/\00a0";
+        }
 
-#breadcrumb li a {
-    color: skyblue;
-}
+        #breadcrumb li a {
+            color: skyblue;
+        }
 
-#breadcrumb li a:hover, a:focus {
-    color: white;
-    text-decoration: underline;
-}
+            #breadcrumb li a:hover, a:focus {
+                color: white;
+                text-decoration: underline;
+            }
 
 /* ====================== Restaurant Details ====================== */
 .inside header {
-  width: 100%;
+    width: 100%;
 }
 
 .inside #map-container {
-  background: blue none repeat scroll 0 0;
-  height: 40vh;
-  max-height: 22em;
-  width: 100%;
+    background: blue none repeat scroll 0 0;
+    height: 40vh;
+    max-height: 22em;
+    width: 100%;
 }
 
 .inside #map {
-  background-color: #ccc;
-  height: 100%;
-  width: 100%;
+    background-color: #ccc;
+    height: 100%;
+    width: 100%;
 }
 
 #restaurant-name {
-  padding: 0.5em;
-  text-align: center;
-  font-size: 20pt;
-  font-weight: 200;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1.1;
+    padding: 0.5em;
+    text-align: center;
+    font-size: 20pt;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.1;
 }
 
 #restaurant-img {
-  display:block;
-  height: 40vh;
-  max-height: 22em;
-  width: 100%;
-  object-fit: cover;
+    display: block;
+    height: 40vh;
+    max-height: 22em;
+    width: 100%;
+    object-fit: cover;
 }
 
 #restaurant-body {
-  margin: 0 1em 0 1em;
+    margin: 0 1em 0 1em;
 }
 
 /* ====================== Reviews ================================= */
 
 #reviews-list {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-#reviews-list li {
-  background-color: #fff;
-  list-style-type: none;
-  border-bottom: 1px solid #f3f3f3;
-  padding: 0 1em 1em;
-}
+    #reviews-list li {
+        background-color: #fff;
+        list-style-type: none;
+        border-bottom: 1px solid #f3f3f3;
+        padding: 0 1em 1em;
+    }
 
-#reviews-list li p {
-  margin: 0 0 1em;
-}
+        #reviews-list li p {
+            margin: 0 0 1em;
+        }
 
 .review-name {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 /* ROOMY */
 @media screen and (min-width: 43em) {
 
-  #reviews-container {
-    margin-left: 1em;
-  }
+    #reviews-container {
+        margin-left: 1em;
+    }
 
-  #restaurant-details {
-    flex-direction: row;
-  }
+    #restaurant-details {
+        flex-direction: row;
+    }
 
-  #restaurant-body {
-    display:flex;
-    flex-direction: row;
-  }
-  
-  #restaurant-details {
-    min-width: 22em;
-  }
+    #restaurant-body {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #restaurant-details {
+        min-width: 22em;
+    }
 }

@@ -11,17 +11,17 @@ const bundler = webpack(webpackConfig);
 
 export function server() {
 
-    let config = {
-        server: 'src',
-        middleware: [
-            webpackDevMiddleware(bundler, { /* options */ }),
-            webpackHotMiddleware(bundler)
-        ],
-    };
+	const config = {
+		server: 'src',
+		middleware: [
+			webpackDevMiddleware(bundler, { /* options */ }),
+			webpackHotMiddleware(bundler)
+		]
+	};
 
-    browser.init(config);
+	browser.init(config);
 
-    gulp.watch('src/js/*.js').on('change', () => browser.reload());
-    gulp.watch('src/*.html').on('change', () => browser.reload());
-    gulp.watch('src/styles/*.css').on('change', () => browser.reload());
+	gulp.watch('src/js/*.js').on('change', () => browser.reload());
+	gulp.watch('src/*.html').on('change', () => browser.reload());
+	gulp.watch('src/styles/*.css').on('change', () => browser.reload());
 }

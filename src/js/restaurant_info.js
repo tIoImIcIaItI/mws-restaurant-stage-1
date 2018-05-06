@@ -16,9 +16,9 @@ export default class RestaurantInfo {
 	}
 
 	initialize = () => {
-		this.document.addEventListener('DOMContentLoaded', (event) => {
+		this.document.addEventListener('DOMContentLoaded', () => {
 
-			this.fetchRestaurantFromURL((error, restaurant) => {
+			this.fetchRestaurantFromURL((error) => {
 				if (error) {
 					console.error(error);
 				} else {
