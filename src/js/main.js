@@ -177,7 +177,7 @@ export default class Main {
 		const article = this.document.createElement('article');
 		li.append(article);
 
-		const name = this.document.createElement('h1');
+		const name = this.document.createElement('h2');
 		name.innerHTML = restaurant.name;
 		article.append(name);
 

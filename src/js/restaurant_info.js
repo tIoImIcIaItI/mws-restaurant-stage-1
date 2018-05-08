@@ -90,6 +90,9 @@ export default class RestaurantInfo {
 	 * Create restaurant HTML and add it to the webpage
 	 */
 	fillRestaurantHTML = (restaurant = this.restaurant) => {
+
+		this.document.title = `${restaurant.name} - Restraurant Reviews`;
+
 		const name = this.document.getElementById('restaurant-name');
 		name.innerHTML = restaurant.name;
 
