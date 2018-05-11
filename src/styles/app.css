@@ -6,6 +6,7 @@
 }
 
 /* https://webaim.org/techniques/css/invisiblecontent/ */
+
 .sr-only {
     position: absolute;
     left: -10000px;
@@ -65,7 +66,8 @@ article,
 aside,
 canvas,
 details,
-figcaption, figure,
+figcaption,
+figure,
 footer,
 header,
 hgroup,
@@ -81,6 +83,7 @@ section {
 }
 
 /* ====================== Footer ========================= */
+
 #footer {
     background-color: #444;
     color: snow;
@@ -91,17 +94,19 @@ section {
     text-transform: uppercase;
 }
 
-    #footer a {
-        color: skyblue;
-        text-decoration: none;
-    }
+#footer a {
+    color: skyblue;
+    text-decoration: none;
+}
 
-        #footer a:hover, a:focus {
-            color: white;
-            text-decoration: underline;
-        }
+#footer a:hover,
+a:focus {
+    color: white;
+    text-decoration: underline;
+}
 
 /* ====================== Navigation ====================== */
+
 #site-header {
     padding: 1em 0;
     width: 100%;
@@ -110,166 +115,26 @@ section {
     text-align: center;
 }
 
-    #site-header h1 a {
-        color: snow;
-        font-size: 14pt;
-        font-weight: 200;
-        letter-spacing: 10px;
-        text-transform: uppercase;
-    }
+#site-header h1 a {
+    color: snow;
+    font-size: 14pt;
+    font-weight: 200;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+}
 
 /* ====================== Map ====================== */
+
 #map {
     height: 33vh;
     width: 100%;
     background-color: #ccc;
 }
 
-/* ====================== Restaurant Filtering ====================== */
-.filter-options {
-    color: #346;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-    .filter-options h2 {
-        display: none;
-    }
-
-    .filter-options select {
-        background-color: white;
-        border: 1px solid #fff;
-        font-family: Arial,sans-serif;
-        font-size: 11pt;
-        height: 2em;
-        letter-spacing: 0;
-        margin: 10px;
-        padding: 0 1em;
-        width: 200px;
-    }
-
-/* ====================== Restaurant Listing ====================== */
-
-.card {
-    background: #fff;
-    border-radius: 2px;
-    display: inline-block;
-    margin: 1em;
-}
-
-.card-1 {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-}
-
-#restaurants-list {
-    background-color: #f3f3f3;
-    list-style: outside none none;
-    margin: 0;
-    padding: 0 1em 2em;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-    #restaurants-list li {
-        margin: 0.5em;
-        text-align: left;
-        width: 100%;
-        max-width: 32em;
-    }
-
-    #restaurants-list .restaurant-img {
-        background-color: #ccc;
-        display: block;
-        margin: 0.5em;
-        max-height: 10vh;
-        object-fit: cover;
-    }
-
-    #restaurants-list .restaurant-location {
-        margin: 0.5em;
-        margin-left: 0;
-    }
-
-    #restaurants-list .restaurant-info {
-        display: flex;
-    }
-
-    #restaurants-list li h2 {
-        font-weight: 200;
-        letter-spacing: 0.1em;
-        line-height: 1.3;
-        margin: 0.5em;
-        margin-bottom: 0;
-        text-transform: uppercase;
-    }
-
-
-    #restaurants-list p {
-        margin: 0;
-        font-size: 11pt;
-    }
-
-    #restaurants-list li a {
-        background-color: #333;
-        border-bottom: 3px solid #eee;
-        color: skyblue;
-        display: inline-block;
-        font-size: 10pt;
-        margin: 0.5em;
-        padding: 8px 30px 10px;
-        text-align: center;
-        text-decoration: none;
-        text-transform: uppercase;
-    }
-
 /* SMALL AND TIGHT */
+
 @media screen and (max-width: 25em) {
-
-    #restaurants-list li h2 {
-        font-size: 10pt;
-    }
-
     nav h1 a {
         letter-spacing: 0.1em;
     }
-
-    #restaurants-list p {
-        font-size: 9pt;
-    }
-}
-
-/* ROOMY */
-@media screen and (min-width: 43em) {
-
-    #restaurants-list {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-        #restaurants-list li {
-            max-width: 23em;
-        }
-
-        #restaurants-list .restaurant-info {
-            flex-direction: column;
-        }
-
-        #restaurants-list .restaurant-img {
-            max-height: 20vh;
-        }
-
-        #restaurants-list .restaurant-location {
-            margin: 0.5em;
-        }
-
-        #restaurants-list li h2 {
-            letter-spacing: 0;
-        }
 }

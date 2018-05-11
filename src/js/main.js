@@ -1,3 +1,4 @@
+import '../styles/restraunt-list.css';
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
 import { buildRestaurantImage } from './image';
