@@ -32,12 +32,12 @@
             ],
             "hero": [
                 {
-                    "width": 100,
-                    "tag": "xs"
-                },
-                {
                     "width": 312,
                     "tag": "sm"
+                },
+                {
+                    "width": 800,
+                    "tag": "md"
                 },
                 {
                     "width": 1024,

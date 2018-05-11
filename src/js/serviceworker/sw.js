@@ -11,7 +11,8 @@ var CACHE_NAME = `restaurant-reviews-${version.number}`;
 
 var urlsToCache = [
 	'/',
-	'/bundle.js'
+	'/index.js',
+	'/restaurant.js'
 ];
 
 self.addEventListener('install', (event) => {

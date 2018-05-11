@@ -11,16 +11,22 @@ let config = {
 	mode: process.env.NODE_ENV,// TODO: process.env.NODE_ENV,
 	entry: isProduction ?
 		{
-			bundle: './js/index.js',
-			sw: './js/sw.js'
+			index: './js/pages/index.js',
+			restaurant: './js/pages/restaurant.js',
+			sw: './js/serviceworker/sw.js'
 		} :
 		{
-			bundle: [
-				'./js/index.js',
+			index: [
+				'./js/pages/index.js',
 				'webpack/hot/dev-server',
 				'webpack-hot-middleware/client'
 			],
-			sw: './js/sw.js'
+			restaurant: [
+				'./js/pages/restaurant.js',
+				'webpack/hot/dev-server',
+				'webpack-hot-middleware/client'
+			],
+			sw: './js/serviceworker/sw.js'
 		},
 
 	output: {

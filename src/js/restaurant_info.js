@@ -1,9 +1,9 @@
+import '../styles/details.css';
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
 import { createReviewElement } from './review';
 import { fillHoursHtml } from './hours';
 import { buildRestaurantImage } from './image';
-import '../styles/details.css';
 import renderCopyright from './copyright';
 
 export default class RestaurantInfo {

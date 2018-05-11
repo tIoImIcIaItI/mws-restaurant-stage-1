@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-mini';
 
 /**
  * Wrap times of day in <time> elements.
