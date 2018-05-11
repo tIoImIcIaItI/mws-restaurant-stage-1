@@ -15,17 +15,22 @@ const srcset = (done) => {
 
 	cleanSrcset(() => { }, false).then(() => {
 
-		config.srcset.sets.forEach(set => {
+		const groups = config.srcset.groups;
 
-			gulp.
-				src(path.join(base, typeConfig.extensions), { base: base }).
-				pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
-				pipe(imageResize({
-					imageMagick: true,
-					width: set.width
-				})).
-				pipe(rename((p) => p.basename = `${p.basename}-${set.tag}`)).
-				pipe(gulp.dest(path.join(config.root.src, typeConfig.dist, typeConfig.dist)));
+		Object.keys(groups).forEach(k => {
+			let group = groups[k];
+
+			group.forEach(set => {
+				gulp.
+					src(path.join(base, typeConfig.extensions), { base: base }).
+					pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
+					pipe(imageResize({
+						imageMagick: true,
+						width: set.width
+					})).
+					pipe(rename((p) => p.basename = `${p.basename}-${set.tag}`)).
+					pipe(gulp.dest(path.join(config.root.src, typeConfig.dist, typeConfig.dist)));
+			});
 		});
 
 		if (done) done();
