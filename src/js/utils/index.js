@@ -17,7 +17,7 @@ export const jsonResponseFrom = (obj) => {
 };
 
 export const idFrom = (url) => {
-	const regex = /\/restaurants\/(\d+)$/is;
+	const regex = /\/restaurants\/(\d+)$/i;
 
 	const id = (url || '').match(regex);
 
