@@ -1,9 +1,12 @@
 import config from './config';
+import Cache from './cache';
 
 /**
  * Common database helper functions.
  */
 export default class DBHelper {
+
+	static _cache = new Cache(1000 * 2);
 
 	/**
 	 * Database URL.
@@ -16,14 +19,22 @@ export default class DBHelper {
 	 * Fetch all restaurants.
 	 */
 	static fetchRestaurants(callback) {
+
+		// This will minimize a rapid sequence of identical API calls before the service worker cache kicks in
+		const res = DBHelper._cache.tryGetByKey('all');
+		if (res) {
+			callback(null, res);
+			return;
+		}
+
 		const xhr = new XMLHttpRequest();
 		xhr.open('GET', `${DBHelper.DATABASE_URL}/restaurants`);
 		xhr.onload = () => {
-			if (xhr.status === 200) { // Got a success response from server!
-				const json = JSON.parse(xhr.responseText);
-				const restaurants = json;
+			if (xhr.status === 200) {
+				const restaurants = JSON.parse(xhr.responseText);
+				DBHelper._cache.add('all', restaurants);
 				callback(null, restaurants);
-			} else { // Oops!. Got an error from server.
+			} else {
 				const error = (`Request failed. Returned status of ${xhr.status}`);
 				callback(error, null);
 			}
@@ -35,18 +46,24 @@ export default class DBHelper {
 	 * Fetch a restaurant by its ID.
 	 */
 	static fetchRestaurantById(id, callback) {
-		// fetch all restaurants with proper error handling.
+
+		// This will minimize a rapid sequence of identical API calls before the service worker cache kicks in
+		const res = DBHelper._cache.tryGetByKey(id);
+		if (res) {
+			callback(null, res);
+			return;
+		}
+
 		const xhr = new XMLHttpRequest();
 		xhr.open('GET', `${DBHelper.DATABASE_URL}/restaurants/${id}`);
 		xhr.onload = () => {
-			if (xhr.status === 200) { // Got a success response from server!
-				const json = JSON.parse(xhr.responseText);
-				const restaurant = json;
+			if (xhr.status === 200) {
+				const restaurant = JSON.parse(xhr.responseText);
+				DBHelper._cache.add(id, restaurant);
 				callback(null, restaurant);
 			} else if (xhr.status === 404) {
 				callback(`Restaurant with ID ${id} not found`, null);
-			} 
-			else { // Oops!. Got an error from server.
+			} else {
 				const error = (`Request failed. Returned status of ${xhr.status}`);
 				callback(error, null);
 			}
