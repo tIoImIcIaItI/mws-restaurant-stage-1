@@ -13,6 +13,21 @@
         "dist": "./",
         "extensions": "*.+(htm|html)"
     },
+    "pwa": {
+        "src": "",
+        "dist": "./",
+        "extensions": "*.+(webmanifest)"
+    },
+    "icons": {
+        "src": "icons",
+        "dist": "./icons/",
+        "extensions": "*.+(jpg|jpeg|gif|png|svg|webp)"
+    },
+    "favicon": {
+        "src": "",
+        "dist": "./",
+        "extensions": "favicon.ico"
+    },
     "srcset": {
         "src": "masters/**/",
         "dist": "img",
