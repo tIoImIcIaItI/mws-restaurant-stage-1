@@ -1,8 +1,10 @@
+import 'intersection-observer'; // polyfill IntersectionObserver
 import '../styles/restraunt-list.css';
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
 import { buildRestaurantImage } from './image';
 import renderCopyright from './copyright';
+import Observer from './observer';
 
 export default class Main {
 
@@ -14,15 +16,50 @@ export default class Main {
 		this.initialize();
 	}
 
+	createObserver = () => {
+
+		this.callback = (entries, observer) => {
+			entries.forEach(entry => {
+				// Each entry describes an intersection change for one observed target element:
+				//   entry.boundingClientRect
+				//   entry.intersectionRatio
+				//   entry.intersectionRect
+				//   entry.isIntersecting
+				//   entry.rootBounds
+				//   entry.target
+				//   entry.time
+				if (!entry.isIntersecting) return;
+
+				const image = entry.target;
+				console.log(`INTERSECTING: ${image.getAttribute('data-src')}`);
+
+				image.src = image.dataset.src;
+				image.srcset = image.dataset.srcset;
+				image.sizes = image.dataset.sizes;
+
+				observer.unobserve(image);
+			});
+		};
+
+		this.observer = new Observer(this.callback, {
+			threshold: 0.01
+		});
+	};
+
 	/**
 	 * Fetch neighborhoods and cuisines as soon as the page is loaded.
 	 */
 	initialize = () => {
-		this.document.addEventListener('DOMContentLoaded', (event) => {
+
+	//this.window.addEventListener("load", event => {
+			this.createObserver();
+		//   }, false);
+
+	this.document.addEventListener('DOMContentLoaded', (event) => {
 
 			Promise.
-				all([this.fetchNeighborhoods(), this.fetchCuisines()]).
-				then(_ => this.updateRestaurants());
+			all([this.fetchNeighborhoods(), this.fetchCuisines()]).
+			then(_ => this.updateRestaurants());
 
 			this.document.getElementById('footer').innerHTML = renderCopyright();
 		});
@@ -183,16 +220,14 @@ export default class Main {
 		article.append(name);
 
 		const info = this.document.createElement('div');
-		info.className = 'restaurant-info';
-		{
+		info.className = 'restaurant-info'; {
 			const image = this.document.createElement('img');
 			const src = DBHelper.imageUrlForRestaurant(restaurant);
-			buildRestaurantImage(restaurant, image, src, 'thumb');
+			buildRestaurantImage(restaurant, image, src, 'thumb', DBHelper.imageUrlForRestaurant({}), this.observer);
 			info.append(image);
 
 			const location = this.document.createElement('div');
-			location.className = 'restaurant-location';
-			{
+			location.className = 'restaurant-location'; {
 				const neighborhood = this.document.createElement('p');
 				neighborhood.innerHTML = restaurant.neighborhood;
 				location.append(neighborhood);

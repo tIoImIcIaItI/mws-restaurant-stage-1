@@ -104,7 +104,7 @@ export default class RestaurantInfo {
 
 		const src = DBHelper.imageUrlForRestaurant(restaurant);
 		const image = this.document.getElementById('restaurant-img');
-		buildRestaurantImage(restaurant, image, src, 'hero');
+		buildRestaurantImage(restaurant, image, src, 'hero', DBHelper.imageUrlForRestaurant({}));
 
 		const cuisine = this.document.getElementById('restaurant-cuisine');
 		cuisine.innerHTML = restaurant.cuisine_type;
