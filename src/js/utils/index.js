@@ -9,3 +9,19 @@ export const loadScript = (src, async, integrity, crossorigin) => {
 	var parent = document.getElementsByTagName('head')[0];
 	parent.appendChild(child);
 };
+
+export const jsonResponseFrom = (obj) => {
+	return new Response(
+		new Blob([JSON.stringify(obj)], { type: 'application/json' }), 
+		{ "status": 200, "statusText": "ok" });
+};
+
+export const idFrom = (url) => {
+	const regex = /\/restaurants\/(\d+)$/is;
+
+	const id = (url || '').match(regex);
+
+	return id && id.length >= 2 && id[1] ? 
+		parseInt(id[1], 10) : 
+		null;
+};
