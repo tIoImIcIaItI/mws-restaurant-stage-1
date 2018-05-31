@@ -4,7 +4,7 @@ export const loadScript = (src, async, integrity, crossorigin) => {
 
 	if (async) child.async = true;
 	if (integrity) child.integrity = integrity;
-	if (crossorigin) child.crossorigin = crossorigin;
+	if (crossorigin) child.crossOrigin = crossorigin;
 
 	var parent = document.getElementsByTagName('head')[0];
 	parent.appendChild(child);
