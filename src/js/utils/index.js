@@ -1,4 +1,4 @@
-export const loadScript = (src, async, integrity, crossorigin) => {
+export const loadScript = (document, src, async, integrity, crossorigin) => {
 	var child = document.createElement('script');
 	child.src = src;
 

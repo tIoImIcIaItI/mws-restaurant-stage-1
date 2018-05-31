@@ -26,7 +26,7 @@ const sizesFor = (group) => {
 		join(', ');
 };
 
-export const buildRestaurantImage = (restaurant, image, src, group, missingImageSrc, observer) => {
+export const buildRestaurantImage = (restaurant, image, src, group, placeholder, observer) => {
 
 	const srcset = srcsetFor(group, src);
 	const sizes = sizesFor(group);
@@ -39,9 +39,10 @@ export const buildRestaurantImage = (restaurant, image, src, group, missingImage
 		image.setAttribute('data-srcset', srcset);
 		image.setAttribute('data-sizes', sizes);
 
-		image.src = missingImageSrc;
-		image.srcset = srcsetFor(group, missingImageSrc);
-		image.sizes = sizesFor(group);
+		image.src = placeholder.src;
+		
+		for (const [key, value] of Object.entries(placeholder.style))
+			image.style[key] = value;
 
 		observer.observe(image);
 	} else {

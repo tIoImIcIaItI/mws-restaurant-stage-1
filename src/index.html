@@ -23,7 +23,7 @@
 
     <main id="maincontent">
 
-        <section id="map-container">
+        <section id="map-container" style="display: none;" aria-live="polite">
             <div id="map" tabindex="0"></div>
         </section>
 
@@ -33,21 +33,33 @@
 
                 <h2>Filter Results</h2>
 
-                <div>
-                    <i class="far fa-map"></i>
+                <div class="widget">
+                    <i class="widget-glyph fas fa-map-signs"></i>
                     <span id="neighborhoods-label" class="sr-only">Neighborhoods</span>
-                    <select id="neighborhoods-select" name="neighborhoods" aria-labelledby="neighborhoods-label" aria-controls="restaurants-list"
+                    <select class="widget-input" id="neighborhoods-select" name="neighborhoods" 
+                        aria-labelledby="neighborhoods-label" aria-controls="restaurants-list"
                         onchange="updateRestaurants()">
                         <option value="all">All Neighborhoods</option>
                     </select>
                 </div>
 
-                <div>
-                    <i class="fas fa-utensils"></i>
+                <div class="widget">
+                    <i class="widget-glyph fas fa-utensils"></i>
                     <span id="cuisines-label" class="sr-only">Cuisines</span>
-                    <select id="cuisines-select" name="cuisines" aria-labelledby="cuisines-label" aria-controls="restaurants-list" onchange="updateRestaurants()">
+                    <select class="widget-input" id="cuisines-select" name="cuisines" 
+                        aria-labelledby="cuisines-label" aria-controls="restaurants-list" 
+                        onchange="updateRestaurants()">
                         <option value="all">All Cuisines</option>
                     </select>
+                </div>
+
+                <div class="widget">
+                    <i class="widget-glyph fas fa-map"></i>
+                    <label class="widget-input switch">
+                        <span class="sr-only">Display interactive map</span>
+                        <input type="checkbox" id='show-map'>
+                        <span class="slider round"></span>
+                    </label>
                 </div>
 
             </div>
@@ -66,5 +78,4 @@
     </script>
 
 </body>
-
 </html>

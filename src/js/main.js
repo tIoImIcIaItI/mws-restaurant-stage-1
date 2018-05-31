@@ -1,17 +1,20 @@
 import 'intersection-observer'; // polyfill IntersectionObserver
 import '../styles/restraunt-list.css';
+import '../styles/inputs.css';
+// import config from './config';
 import DBHelper from './dbhelper';
 import { addressHtml } from './address';
 import { buildRestaurantImage } from './image';
 import renderCopyright from './copyright';
 import Observer from './observer';
+import Map from './map';
 
 export default class Main {
 
 	constructor(window, document) {
 		this.window = window;
 		this.document = document;
-		this.markers = [];
+		this.mapInitialized = false;
 
 		this.initialize();
 	}
@@ -20,18 +23,10 @@ export default class Main {
 
 		this.callback = (entries, observer) => {
 			entries.forEach(entry => {
-				// Each entry describes an intersection change for one observed target element:
-				//   entry.boundingClientRect
-				//   entry.intersectionRatio
-				//   entry.intersectionRect
-				//   entry.isIntersecting
-				//   entry.rootBounds
-				//   entry.target
-				//   entry.time
 				if (!entry.isIntersecting) return;
 
 				const image = entry.target;
-				console.log(`INTERSECTING: ${image.getAttribute('data-src')}`);
+				// console.log(`INTERSECTING: ${image.getAttribute('data-src')}`);
 
 				image.src = image.dataset.src;
 				image.srcset = image.dataset.srcset;
@@ -42,8 +37,26 @@ export default class Main {
 		};
 
 		this.observer = new Observer(this.callback, {
-			threshold: 0.01
+			threshold: 0.05
 		});
+	};
+
+	newMap = () => {
+		return new Map(
+			this.window, this.document, {
+				zoom: 12,
+				center: {
+					lat: 40.722216,
+					lng: -73.987501
+				},
+				scrollwheel: false
+			},
+			() => this.document.getElementById('map'),
+			() => (this.restaurants || []).map(restaurant => ({
+				position: restaurant.latlng,
+				title: restaurant.name,
+				url: DBHelper.urlForRestaurant(restaurant)
+			})));
 	};
 
 	/**
@@ -51,88 +64,112 @@ export default class Main {
 	 */
 	initialize = () => {
 
-	//this.window.addEventListener("load", event => {
-			this.createObserver();
-		//   }, false);
+		// Set up lazy-load images
+		this.createObserver();
 
-	this.document.addEventListener('DOMContentLoaded', (event) => {
+		this.document.addEventListener('DOMContentLoaded', (event) => {
 
-			Promise.
-			all([this.fetchNeighborhoods(), this.fetchCuisines()]).
-			then(_ => this.updateRestaurants());
+			// Load initial data
+			this.fetchInitialData().
+				then(data => {
+					this.neighborhoods = data.neighborhoods;
+					this.cuisines = data.cuisines;
+					this.restaurants = data.restaurants;
 
-			this.document.getElementById('footer').innerHTML = renderCopyright();
+					this.fillNeighborhoodsHTML();
+					this.fillCuisinesHTML();
+				}).
+				then(_ => 
+					//this.updateRestaurants()
+					this.processRestaurants()
+				);
+
+			// Render the footer component
+			this.document.getElementById('footer').innerHTML = 
+				renderCopyright();
+
+			// Wire up the map toggle
+			this.document.getElementById('show-map').addEventListener('change', event => {
+				
+				const val = event.target.checked;
+
+				this.document.getElementById('map-container').
+					style.display = val ? 'block' : 'none';
+
+				if (val && !this.mapInitialized) {
+					this.map = this.newMap();
+					this.mapInitialized = true;
+				}
+			})
 		});
 	}
 
-	/**
-	 * Initialize Google map, called from HTML.
-	 */
-	initMap = () => {
-		const loc = {
-			lat: 40.722216,
-			lng: -73.987501
-		};
-
-		this.map = new this.window.google.maps.Map(this.document.getElementById('map'), {
-			zoom: 12,
-			center: loc,
-			scrollwheel: false
-		});
-
-		this.addMarkersToMap();
-	};
-
-	/**
-	 * Fetch all neighborhoods and set their HTML.
-	 */
-	fetchNeighborhoods = () => {
+	fetchInitialData = () => {
 		return new Promise((resolve, reject) => {
 
-			DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+			DBHelper.fetchInitialData((error, filters) => {
 				if (error) { // Got an error
 					console.error(error);
 					reject(error);
 				} else {
-					this.neighborhoods = neighborhoods;
-					this.fillNeighborhoodsHTML();
-					resolve(neighborhoods);
+					resolve(filters);
 				}
 			});
 
 		});
 	};
+
+	// /**
+	//  * Fetch all neighborhoods and set their HTML.
+	//  */
+	// fetchNeighborhoods = () => {
+	// 	return new Promise((resolve, reject) => {
+
+	// 		DBHelper.fetchNeighborhoods((error, neighborhoods) => {
+	// 			if (error) { // Got an error
+	// 				console.error(error);
+	// 				reject(error);
+	// 			} else {
+	// 				this.neighborhoods = neighborhoods;
+	// 				this.fillNeighborhoodsHTML();
+	// 				resolve(neighborhoods);
+	// 			}
+	// 		});
+
+	// 	});
+	// };
+
+	// /**
+	//  * Fetch all cuisines and set their HTML.
+	//  */
+	// fetchCuisines = () => {
+	// 	return new Promise((resolve, reject) => {
+
+	// 		DBHelper.fetchCuisines((error, cuisines) => {
+	// 			if (error) { // Got an error!
+	// 				console.error(error);
+	// 				reject(error);
+	// 			} else {
+	// 				this.cuisines = cuisines;
+	// 				this.fillCuisinesHTML();
+	// 				resolve(cuisines);
+	// 			}
+	// 		});
+
+	// 	});
+	// };
 
 	/**
 	 * Set neighborhoods HTML.
 	 */
 	fillNeighborhoodsHTML = (neighborhoods = this.neighborhoods) => {
 		const select = document.getElementById('neighborhoods-select');
+
 		neighborhoods.forEach(neighborhood => {
 			const option = document.createElement('option');
 			option.innerHTML = neighborhood;
 			option.value = neighborhood;
 			select.append(option);
-		});
-	};
-
-	/**
-	 * Fetch all cuisines and set their HTML.
-	 */
-	fetchCuisines = () => {
-		return new Promise((resolve, reject) => {
-
-			DBHelper.fetchCuisines((error, cuisines) => {
-				if (error) { // Got an error!
-					console.error(error);
-					reject(error);
-				} else {
-					this.cuisines = cuisines;
-					this.fillCuisinesHTML();
-					resolve(cuisines);
-				}
-			});
-
 		});
 	};
 
@@ -148,6 +185,13 @@ export default class Main {
 			option.value = cuisine;
 			select.append(option);
 		});
+	};
+
+	processRestaurants = () => {
+		this.fillRestaurantsHTML();
+				
+		if (this.map)
+			this.map.addMarkersToMap();
 	};
 
 	/**
@@ -172,8 +216,8 @@ export default class Main {
 				console.error(error);
 			} else {
 				this.resetRestaurants(restaurants);
-				this.fillRestaurantsHTML();
-				this.addMarkersToMap();
+
+				this.processRestaurants();
 			}
 		});
 	};
@@ -189,8 +233,8 @@ export default class Main {
 		ul.innerHTML = '';
 
 		// Remove all map markers
-		this.markers.forEach(m => m.setMap(null));
-		this.markers = [];
+		if (this.map)
+			this.map.removeAllMarkers();
 
 		this.restaurants = restaurants;
 	};
@@ -200,9 +244,10 @@ export default class Main {
 	 */
 	fillRestaurantsHTML = (restaurants = this.restaurants) => {
 		const ul = document.getElementById('restaurants-list');
-		restaurants.forEach(restaurant => {
-			ul.append(this.createRestaurantHTML(restaurant));
-		});
+
+		restaurants.forEach(restaurant => 
+			ul.append(this.createRestaurantHTML(restaurant))
+		);
 	};
 
 	/**
@@ -221,9 +266,19 @@ export default class Main {
 
 		const info = this.document.createElement('div');
 		info.className = 'restaurant-info'; {
+
 			const image = this.document.createElement('img');
 			const src = DBHelper.imageUrlForRestaurant(restaurant);
-			buildRestaurantImage(restaurant, image, src, 'thumb', DBHelper.imageUrlForRestaurant({}), this.observer);
+			buildRestaurantImage(
+				restaurant, image, src, 'thumb', 
+				{ 
+					src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 
+					style: { 
+						//width: '10em',
+						height: '100vh' 
+					}
+				}, 
+				this.observer);
 			info.append(image);
 
 			const location = this.document.createElement('div');
@@ -246,36 +301,5 @@ export default class Main {
 		article.append(more);
 
 		return li;
-	};
-
-	/**
-	 * Map marker for a restaurant.
-	 */
-	mapMarkerForRestaurant = (restaurant, map) => {
-		const marker = new this.window.google.maps.Marker({
-			position: restaurant.latlng,
-			title: restaurant.name,
-			url: DBHelper.urlForRestaurant(restaurant),
-			map: map,
-			animation: this.window.google.maps.Animation.DROP
-		});
-		return marker;
-	}
-
-	/**
-	 * Add markers for current restaurants to the map.
-	 */
-	addMarkersToMap = (restaurants = this.restaurants) => {
-
-		if (!this.window.google || !this.map) return;
-
-		(restaurants || []).forEach(restaurant => {
-			// Add marker to the map
-			const marker = this.mapMarkerForRestaurant(restaurant, this.map);
-			this.window.google.maps.event.addListener(marker, 'click', () => {
-				this.window.location.href = marker.url;
-			});
-			this.markers.push(marker);
-		});
 	};
 }
