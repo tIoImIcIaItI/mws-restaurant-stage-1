@@ -12,7 +12,7 @@ const reviewDateHtml = (reviewDate) => {
 /**
  * Create review HTML and add it to the webpage.
  */
-export const createReviewElement = (document, review) => {
+const render = (document, review) => {
 	const article = document.createElement('article');
 	{
 		const name = document.createElement('div');
@@ -38,3 +38,5 @@ export const createReviewElement = (document, review) => {
 
 	return article;
 };
+
+export default render;

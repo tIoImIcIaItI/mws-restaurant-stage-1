@@ -48,9 +48,13 @@ h3 p {
 }
 
 .inside #map {
-    background-color: #ccc;
+    background-color: #F3F3F3;
     height: 100%;
     width: 100%;
+}
+
+.inside #map img {
+    height: 100%;
 }
 
 #restaurant-name {

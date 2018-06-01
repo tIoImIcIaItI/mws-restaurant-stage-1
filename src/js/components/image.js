@@ -1,4 +1,4 @@
-import config from '../../tasks/config';
+import config from '../../../tasks/config';
 
 const infoFor = (src) => {
 	const idx = src.lastIndexOf('.');
@@ -26,7 +26,7 @@ const sizesFor = (group) => {
 		join(', ');
 };
 
-export const buildRestaurantImage = (restaurant, image, src, group, placeholder, observer) => {
+const render = (restaurant, image, src, group, placeholder, observer) => {
 
 	const srcset = srcsetFor(group, src);
 	const sizes = sizesFor(group);
@@ -51,3 +51,5 @@ export const buildRestaurantImage = (restaurant, image, src, group, placeholder,
 		image.sizes = sizes;
 	}
 };
+
+export default render;

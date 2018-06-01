@@ -1,5 +1,5 @@
-import { loadScript } from './utils/index';
-import config from './config';
+import { loadScript } from '../utils/index';
+import config from '../config';
 
 export default class Map {
 

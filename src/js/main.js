@@ -1,13 +1,11 @@
 import 'intersection-observer'; // polyfill IntersectionObserver
-import '../styles/restraunt-list.css';
-import '../styles/inputs.css';
-// import config from './config';
+import { waitForDOMContentLoaded } from './utils/index';
 import DBHelper from './dbhelper';
-import { addressHtml } from './address';
-import { buildRestaurantImage } from './image';
-import renderCopyright from './copyright';
-import Observer from './observer';
-import Map from './map';
+import Observer from './utils/observer';
+import Map from './components/map';
+import renderAddress from './components/address';
+import renderImage from './components/image';
+import renderCopyright from './components/copyright';
 
 export default class Main {
 
@@ -67,97 +65,63 @@ export default class Main {
 		// Set up lazy-load images
 		this.createObserver();
 
-		this.document.addEventListener('DOMContentLoaded', (event) => {
+		// Load initial data
+		this.fetchInitialData().
+			then(data => {
+				this.neighborhoods = data.neighborhoods;
+				this.cuisines = data.cuisines;
+				this.restaurants = data.restaurants;
+			}).
+			then(() => waitForDOMContentLoaded(this.document)).
+			then(() => {
+				this.fillNeighborhoodsHTML();
+				this.fillCuisinesHTML();
+				this.processRestaurants();
+			});
 
-			// Load initial data
-			this.fetchInitialData().
-				then(data => {
-					this.neighborhoods = data.neighborhoods;
-					this.cuisines = data.cuisines;
-					this.restaurants = data.restaurants;
+		waitForDOMContentLoaded(this.document).
+			then(() => {
 
-					this.fillNeighborhoodsHTML();
-					this.fillCuisinesHTML();
-				}).
-				then(_ => 
-					//this.updateRestaurants()
-					this.processRestaurants()
+				// Render the footer component
+				this.document.getElementById('footer').innerHTML = 
+					renderCopyright();
+
+				// Wire up and reset the map toggle
+				this.document.getElementById('show-map').addEventListener('change', event => 
+					this.onShowMapChanged(event.target.checked)
 				);
-
-			// Render the footer component
-			this.document.getElementById('footer').innerHTML = 
-				renderCopyright();
-
-			// Wire up the map toggle
-			this.document.getElementById('show-map').addEventListener('change', event => {
-				
-				const val = event.target.checked;
-
-				this.document.getElementById('map-container').
-					style.display = val ? 'block' : 'none';
-
-				if (val && !this.mapInitialized) {
-					this.map = this.newMap();
-					this.mapInitialized = true;
-				}
-			})
-		});
+				this.onShowMapChanged(false);
+			});
 	}
+
+	onShowMapChanged = (showMap) => {
+
+		// Keep checkbox in sync
+		var checkBox = this.document.getElementById('show-map');
+		if (checkBox && checkBox.checked != showMap)
+			checkBox.checked = showMap;
+
+		// Keep widget in sync
+		this.document.getElementById('map-container').
+		style.display = showMap ? 'block' : 'none';
+
+		// Lazy-load the actual map
+		if (showMap && !this.mapInitialized) {
+			this.map = this.newMap();
+			this.mapInitialized = true;
+		}
+	};
 
 	fetchInitialData = () => {
 		return new Promise((resolve, reject) => {
-
-			DBHelper.fetchInitialData((error, filters) => {
-				if (error) { // Got an error
-					console.error(error);
+			DBHelper.fetchInitialData((error, data) => {
+				if (error)
 					reject(error);
-				} else {
-					resolve(filters);
-				}
+				else
+					resolve(data);
 			});
-
 		});
 	};
-
-	// /**
-	//  * Fetch all neighborhoods and set their HTML.
-	//  */
-	// fetchNeighborhoods = () => {
-	// 	return new Promise((resolve, reject) => {
-
-	// 		DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-	// 			if (error) { // Got an error
-	// 				console.error(error);
-	// 				reject(error);
-	// 			} else {
-	// 				this.neighborhoods = neighborhoods;
-	// 				this.fillNeighborhoodsHTML();
-	// 				resolve(neighborhoods);
-	// 			}
-	// 		});
-
-	// 	});
-	// };
-
-	// /**
-	//  * Fetch all cuisines and set their HTML.
-	//  */
-	// fetchCuisines = () => {
-	// 	return new Promise((resolve, reject) => {
-
-	// 		DBHelper.fetchCuisines((error, cuisines) => {
-	// 			if (error) { // Got an error!
-	// 				console.error(error);
-	// 				reject(error);
-	// 			} else {
-	// 				this.cuisines = cuisines;
-	// 				this.fillCuisinesHTML();
-	// 				resolve(cuisines);
-	// 			}
-	// 		});
-
-	// 	});
-	// };
 
 	/**
 	 * Set neighborhoods HTML.
@@ -269,7 +233,7 @@ export default class Main {
 
 			const image = this.document.createElement('img');
 			const src = DBHelper.imageUrlForRestaurant(restaurant);
-			buildRestaurantImage(
+			renderImage(
 				restaurant, image, src, 'thumb', 
 				{ 
 					src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 
@@ -288,7 +252,7 @@ export default class Main {
 				location.append(neighborhood);
 
 				const address = this.document.createElement('p');
-				address.innerHTML = addressHtml(restaurant.address);
+				address.innerHTML = renderAddress(restaurant.address);
 				location.append(address);
 			}
 			info.append(location);

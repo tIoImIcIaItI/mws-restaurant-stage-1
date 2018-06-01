@@ -21,7 +21,15 @@ const Config = {
         }
     },
     maps: {
-        key: 'GOOGLE_MAPS_API_KEY'
+        key: 'GOOGLE_MAPS_API_KEY',
+        static: {
+            url: 'https://maps.googleapis.com/maps/api/staticmap',
+            options: {
+                zoom: 16,
+                maptype: 'roadmap',
+                size: '290x290'
+            }
+        }
     }
 };
 

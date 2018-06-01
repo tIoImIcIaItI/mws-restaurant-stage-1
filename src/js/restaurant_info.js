@@ -1,10 +1,12 @@
-import '../styles/details.css';
+import config from './config';
+import { waitForDOMContentLoaded, getParameterByName } from './utils/index';
 import DBHelper from './dbhelper';
-import { addressHtml } from './address';
-import { createReviewElement } from './review';
-import { fillHoursHtml } from './hours';
-import { buildRestaurantImage } from './image';
-import renderCopyright from './copyright';
+import StaticMap from './components/staticmap';
+import renderAddress from './components/address';
+import renderReview from './components/review';
+import renderHours from './components/hours';
+import renderImage from './components/image';
+import renderCopyright from './components/copyright';
 
 export default class RestaurantInfo {
 
@@ -12,78 +14,67 @@ export default class RestaurantInfo {
 		this.window = window;
 		this.document = document;
 
+		this.map = new StaticMap(
+			this.document,
+			() => this.document.getElementById('map'));
+
 		this.initialize();
 	}
-
+	
 	initialize = () => {
-		this.document.addEventListener('DOMContentLoaded', () => {
 
-			this.fetchRestaurantFromURL((error) => {
-				if (error) {
-					console.error(error);
-				} else {
+		// Render restaurant info
+		this.fetchRestaurantFromURL().
+			then(restaurant => this.restaurant = restaurant).
+			then(() => waitForDOMContentLoaded(this.document)).
+			then(() => {
+				if (this.restaurant) {
 					this.fillBreadcrumb();
-
-					if (this.window.google && !this.map)
-						initMap();
+					this.fillRestaurantHTML();
+					this.renderStaticMap();
 				}
 			});
 
-			this.document.getElementById('footer').innerHTML = renderCopyright();
-		});
+		// Render footer component
+		waitForDOMContentLoaded(this.document).
+			then(() => {
+				this.document.getElementById('footer').innerHTML =
+					renderCopyright();
+			});
 	}
 
-	/**
-	 * Map marker for a restaurant.
-	 */
-	mapMarkerForRestaurant = (restaurant, map) => {
-		const marker = new this.window.google.maps.Marker({
-			position: restaurant.latlng,
-			title: restaurant.name,
-			url: DBHelper.urlForRestaurant(restaurant),
-			map: map,
-			animation: this.window.google.maps.Animation.DROP
-		});
-		return marker;
-	}
+	renderStaticMap = () => {
+		if (!this.map || !this.restaurant) return;
 
-	/**
-	 * Initialize Google map, called from HTML.
-	 */
-	initMap = () => {
-		if (!this.restaurant || !this.window.google) return;
-
-		this.map = new this.window.google.maps.Map(this.document.getElementById('map'), {
-			zoom: 16,
-			center: this.restaurant.latlng,
-			scrollwheel: false
-		});
-
-		this.mapMarkerForRestaurant(this.restaurant, this.map);
+		this.map.render(
+			`Google map of ${this.restaurant.name}`, {
+				center: this.restaurant.latlng,
+				markers: this.restaurant.latlng
+			});
 	};
 
 	/**
 	 * Get current restaurant from page URL.
 	 */
-	fetchRestaurantFromURL = (callback) => {
-		if (this.restaurant) { // restaurant already fetched!
-			callback(null, this.restaurant);
-			return;
-		}
-		const id = this.getParameterByName('id');
-		if (!id) { // no id found in URL
-			callback('No restaurant id in URL', null);
-		} else {
-			DBHelper.fetchRestaurantById(id, (error, restaurant) => {
-				this.restaurant = restaurant;
-				if (!restaurant) {
-					console.error(error);
-					return;
-				}
-				this.fillRestaurantHTML();
-				callback(null, restaurant);
-			});
-		}
+	fetchRestaurantFromURL = () => {
+		return new Promise((resolve, reject) => {
+
+			if (this.restaurant)
+				resolve(this.restaurant);
+
+			const id = getParameterByName('id');
+
+			if (!id) {
+				reject('No restaurant id in URL');
+			} else {
+				DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+					if (error || !restaurant)
+						reject(error || 'No restaurant fetched');
+					else
+						resolve(restaurant);
+				});
+			}
+		});
 	};
 
 	/**
@@ -100,18 +91,19 @@ export default class RestaurantInfo {
 		hood.innerHTML = restaurant.neighborhood;
 
 		const address = this.document.getElementById('restaurant-address');
-		address.innerHTML = addressHtml(restaurant.address);
+		address.innerHTML = renderAddress(restaurant.address);
 
 		const src = DBHelper.imageUrlForRestaurant(restaurant);
 		const image = this.document.getElementById('restaurant-img');
-		buildRestaurantImage(restaurant, image, src, 'hero', DBHelper.imageUrlForRestaurant({}));
+		renderImage(
+			restaurant, image, src, 'hero', DBHelper.imageUrlForRestaurant({}));
 
 		const cuisine = this.document.getElementById('restaurant-cuisine');
 		cuisine.innerHTML = restaurant.cuisine_type;
 
 		// fill operating hours
 		if (restaurant.operating_hours) {
-			fillHoursHtml(
+			renderHours(
 				this.document,
 				this.document.getElementById('restaurant-hours'),
 				this.restaurant.operating_hours);
@@ -137,7 +129,7 @@ export default class RestaurantInfo {
 		const ul = this.document.getElementById('reviews-list');
 		reviews.forEach(review => {
 			const li = this.document.createElement('li');
-			li.appendChild(createReviewElement(this.document, review));
+			li.appendChild(renderReview(this.document, review));
 			ul.appendChild(li);
 		});
 		container.appendChild(ul);
@@ -151,21 +143,5 @@ export default class RestaurantInfo {
 		const li = this.document.createElement('li');
 		li.innerHTML = restaurant.name;
 		breadcrumb.appendChild(li);
-	};
-
-	/**
-	 * Get a parameter by name from page URL.
-	 */
-	getParameterByName = (name, url) => {
-		if (!url)
-			url = window.location.href;
-		name = name.replace(/[\[\]]/g, '\\$&');
-		const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
-			results = regex.exec(url);
-		if (!results)
-			return null;
-		if (!results[2])
-			return '';
-		return decodeURIComponent(results[2].replace(/\+/g, ' '));
 	};
 }

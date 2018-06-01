@@ -32,7 +32,7 @@ const headerRow = () => {
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
-export const fillHoursHtml = (document, root, operatingHours) => {
+const render = (document, root, operatingHours) => {
 
 	root.appendChild(headerRow());
 
@@ -53,3 +53,5 @@ export const fillHoursHtml = (document, root, operatingHours) => {
 	}
 
 };
+
+export default render;

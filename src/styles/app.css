@@ -1,7 +1,4 @@
-﻿@charset "utf-8";
-/* CSS Document */
-
-* {
+﻿* {
     box-sizing: border-box;
 }
 
@@ -128,7 +125,7 @@ a:focus {
 #map {
     height: 33vh;
     width: 100%;
-    background-color: #ccc;
+    background-color: #F3F3F3;
 }
 
 /* SMALL AND TIGHT */

@@ -1,10 +1,9 @@
 import config from './config';
-import Cache from './cache';
+import Cache from './utils/cache';
 
-function distinct(arr, key){
+function distinct(arr, key) {
 	const keys = arr.map((v, i) => arr[i][key]);
-	const uniquekeys = keys.filter((v, i) => keys.indexOf(v) === i);
-	return uniquekeys;
+	return keys.filter((v, i) => keys.indexOf(v) === i);
 }
 
 /**
