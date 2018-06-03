@@ -1,5 +1,9 @@
 /* ADAPTED FROM https://www.w3schools.com/howto/howto_css_switch.asp */
 
+input {
+    margin: 0.5em;
+}
+
 /* The switch - the box around the slider */
 .switch {
     position: relative;
@@ -7,11 +11,6 @@
     width: 4em;
     height: 2em;
 }
-
-/* Hide default HTML checkbox */
-/* .switch input {
-    display: none;
-} */
 
 /* The slider */
 .slider {
@@ -21,40 +20,45 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: 0.3s;
-    transition: 0.3s;
+    background-color: #ddd;
+    -webkit-transition: 0.25s;
+    transition: 0.25s;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 1.4em;
-    width: 1.4em;
-    left: 4px;
-    bottom: 4px;
+    height: 1.5em;
+    width: 1.5em;
+    left: 10%;
+    bottom: 12%;
     background-color: white;
     -webkit-transition: 0.3s;
     transition: 0.3s;
 }
 
 input:checked+.slider {
-    background-color: skyblue;
+    background-color: #D9E8F5;
 }
 
-input:focus+.slider {
-    box-shadow: 0 0 1px skyblue;
+input:focus+.slider:before {
+    box-shadow: 1px 1px 1px #333;
 }
 
 input:checked+.slider:before {
-    -webkit-transform: translateX(2em);
-    -ms-transform: translateX(2em);
-    transform: translateX(2em);
+    -webkit-transform: translateX(1.75em);
+    -ms-transform: translateX(1.75em);
+    transform: translateX(1.75em);
+    background-color: #346;
 }
 
 /* Rounded sliders */
 .slider.round {
     border-radius: 3em;
+}
+
+input:focus+.slider.round {
+    border: 1px #79ABFE solid;
 }
 
 .slider.round:before {
