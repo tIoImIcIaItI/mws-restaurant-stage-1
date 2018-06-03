@@ -3,7 +3,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
 import config from '../config';
-import db from '../db';
+import db from '../data/db';
 import { jsonResponseFrom, idFrom } from '../utils';
 
 const version = { number: config.cache.version };

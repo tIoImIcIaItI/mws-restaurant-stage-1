@@ -1,5 +1,5 @@
-import config from './config';
-import Cache from './utils/cache';
+import config from '../config';
+import Cache from '../utils/cache';
 
 function distinct(arr, key) {
 	const keys = arr.map((v, i) => arr[i][key]);

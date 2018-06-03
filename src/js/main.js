@@ -1,6 +1,6 @@
 import 'intersection-observer'; // polyfill IntersectionObserver
 import { waitForDOMContentLoaded } from './utils/index';
-import DBHelper from './dbhelper';
+import DBHelper from './data/dbhelper';
 import Observer from './utils/observer';
 import Map from './components/map';
 import renderAddress from './components/address';

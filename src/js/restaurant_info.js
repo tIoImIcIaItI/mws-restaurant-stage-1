@@ -1,6 +1,6 @@
 import config from './config';
 import { waitForDOMContentLoaded, getParameterByName } from './utils/index';
-import DBHelper from './dbhelper';
+import DBHelper from './data/dbhelper';
 import StaticMap from './components/staticmap';
 import renderAddress from './components/address';
 import renderReview from './components/review';

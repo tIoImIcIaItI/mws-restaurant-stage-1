@@ -1,5 +1,5 @@
 import idb from 'idb';
-import config from './config';
+import config from '../config';
 
 const doDbUpgrade = (upgradeDb) => {
 	console.log(`Creating database: ${config.db.name} old version ${upgradeDb.oldVersion}`);
