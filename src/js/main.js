@@ -237,10 +237,7 @@ export default class Main {
 				restaurant, image, src, 'thumb', 
 				{ 
 					src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 
-					style: { 
-						//width: '10em',
-						height: '100vh' 
-					}
+					style: { height: '100vh' }
 				}, 
 				this.observer);
 			info.append(image);

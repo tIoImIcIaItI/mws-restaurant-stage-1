@@ -1,39 +1,16 @@
-h3 p {
-    color: #346;
-    margin: 1em 0 0.25em 0;
+h3 {
+    margin-top: 0.5em;
 }
 
-    h3 p span {
+    h3 .label {
+        color: #346;
+        margin: 1em 0 0.25em 0;
+    }
+
+    h3 .label-name {
         margin-left: 0.5em;
         letter-spacing: 0.1em;
     }
-
-/* ====================== breadcrumb ============================== */
-#breadcrumb {
-    list-style: none;
-    font-size: 1em;
-    margin: 0;
-}
-
-    #breadcrumb li {
-        display: inline;
-    }
-
-        /* Add a slash symbol (/) before/behind each list item */
-        #breadcrumb li + li:before {
-            padding: 8px;
-            color: #ccc;
-            content: "/\00a0";
-        }
-
-        #breadcrumb li a {
-            color: skyblue;
-        }
-
-            #breadcrumb li a:hover, a:focus {
-                color: white;
-                text-decoration: underline;
-            }
 
 /* ====================== Restaurant Details ====================== */
 .inside header {
@@ -53,9 +30,9 @@ h3 p {
     width: 100%;
 }
 
-.inside #map img {
-    height: 100%;
-}
+    .inside #map img {
+        height: 100%;
+    }
 
 #restaurant-name {
     padding: 0.5em;

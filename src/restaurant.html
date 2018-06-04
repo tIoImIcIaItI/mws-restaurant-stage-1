@@ -15,15 +15,15 @@
 <body class="inside">
 
     <header>
-        <div id="site-header">
+        <nav id="site-header">
             <h1><a href="/">Restaurant Reviews</a></h1>
 
-            <nav aria-label="Breadcrumb">
+            <div aria-label="Breadcrumb">
                 <ol id="breadcrumb" role="region" aria-live="polite">
                     <li><a href="/">Home</a></li>
                 </ol>
-            </nav>
-        </div>
+            </div>
+        </nav>
     </header>
 
     <main id="maincontent">
@@ -36,42 +36,46 @@
         <div id="restaurant-body">
 
             <section id="restaurant-details" role="region" aria-live="polite">
-
-                <div id="restaurant-location">
-
+                
+                <div>
                     <h3 id="cuisine-header">
-                        <p><i class="fas fa-utensils"></i><span>Cuisine</span></p>
+                        <span class="label"><i class="fas fa-utensils"></i><span class="label-name">Cuisine</span></span>
                     </h3>
                     <p id="restaurant-cuisine"></p>
-
+                </div>
+                
+                <div>
                     <h3 id="location-header">
-                        <p><i class="far fa-building"></i><span>Location</span></p>
+                        <span class="label"><i class="far fa-building"></i><span class="label-name">Location</span></span>
                     </h3>
                     <p>
                         <span id="restaurant-neighborhood"></span>
                         <span id="restaurant-address"></span>
                     </p>
-
+                </div>
+                
+                <div>
                     <h3 id="map-header">
-                        <p><i class="far fa-map"></i><span>Map</span></p>
+                        <span class="label"><i class="far fa-map"></i><span class="label-name">Map</span></span>
                     </h3>
                     <div id="map-container">
-                        <div id="map" tabindex="0"></div>
+                        <p id="map" tabindex="0"></p>
                     </div>
+                </div>
 
-                    <div>
-                        <h3 id="hours-header">
-                            <p><i class="far fa-clock"></i><span>Hours</span></p>
-                        </h3>
+                <div>
+                    <h3 id="hours-header">
+                        <span class="label"><i class="far fa-clock"></i><span class="label-name">Hours</span></span>
+                    </h3>
 
-                        <table id="restaurant-hours"></table>
-                    </div>
+                    <table id="restaurant-hours"></table>
+                </div>
 
             </section>
 
             <section id="reviews-container">
                 <h3 id="reviews-header">
-                    <p><i class="far fa-comments"></i><span>Reviews</span></p>
+                    <span class="label"><i class="far fa-comments"></i><span class="label-name">Reviews</span></span>
                 </h3>
 
                 <ul id="reviews-list" role="region" aria-live="polite"></ul>
@@ -90,5 +94,4 @@
     </script>
 
 </body>
-
 </html>

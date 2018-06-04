@@ -2,6 +2,7 @@ import config from './config';
 import { waitForDOMContentLoaded, getParameterByName } from './utils/index';
 import DBHelper from './data/dbhelper';
 import StaticMap from './components/staticmap';
+import renderBreadcrumb from './components/breadcrumb';
 import renderAddress from './components/address';
 import renderReview from './components/review';
 import renderHours from './components/hours';
@@ -29,7 +30,7 @@ export default class RestaurantInfo {
 			then(() => waitForDOMContentLoaded(this.document)).
 			then(() => {
 				if (this.restaurant) {
-					this.fillBreadcrumb();
+					renderBreadcrumb(this.document, this.document.getElementById('breadcrumb'), this.restaurant);
 					this.fillRestaurantHTML();
 					this.renderStaticMap();
 				}
@@ -133,15 +134,5 @@ export default class RestaurantInfo {
 			ul.appendChild(li);
 		});
 		container.appendChild(ul);
-	};
-
-	/**
-	 * Add restaurant name to the breadcrumb navigation menu
-	 */
-	fillBreadcrumb = (restaurant = this.restaurant) => {
-		const breadcrumb = this.document.getElementById('breadcrumb');
-		const li = this.document.createElement('li');
-		li.innerHTML = restaurant.name;
-		breadcrumb.appendChild(li);
 	};
 }
