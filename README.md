@@ -2,16 +2,17 @@
 ---
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
-## Project Overview: Stage 2
+## Project Overview: Stage 3
 
 The **Restaurant Reviews** projects incrementally convert a static webpage to a mobile-ready web application.
 
-In **Stage Two**, the client application pulls restaurant JSON data from an API server, and provides further offline support. 
-JSON responses are cached using the IndexedDB API.
-Any pages and data previously accessed while connected is reachable while offline.
+In **Stage Three**, a form is added to allow users to create their own reviews. 
+If the app is offline, the form will defer updating to the remote database until a connection is established. 
+Users are able to mark a restaurant as a favorite. 
+Even stricter performance benchmarks will be achieved.
 
 ## Starting the API server
-Clone the provided [API server](https://github.com/udacity/mws-restaurant-stage-2).
+Clone the provided [Stage 3 API server](https://github.com/udacity/mws-restaurant-stage-3).
 
 Follow the directions provided to start the server locally.
 
