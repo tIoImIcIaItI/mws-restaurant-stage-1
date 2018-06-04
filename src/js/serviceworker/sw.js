@@ -1,9 +1,10 @@
-// derived from: 
+// Service Worker callbacks derived from: 
 // https://developers.google.com/web/fundamentals/primers/service-workers/ and 
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
 import config from '../config';
 import db from '../data/db';
+import api from '../data/api';
 import { jsonResponseFrom, idFrom } from '../utils';
 
 const version = { number: config.cache.version };
@@ -35,8 +36,9 @@ function getAndCacheRestraunt(event) {
 		})
 }
 
-function tryGetFromCache(event) {
-	const id = idFrom(event.request.url);
+function tryGetFromCache(url) {
+
+	const id = idFrom(url);
 
 	return id ?
 		db.tryGetCachedRestaurant(id) :
@@ -46,14 +48,18 @@ function tryGetFromCache(event) {
 function getRestaurantData(event) {
 	//console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
 
-	return tryGetFromCache(event).
+	return tryGetFromCache(event.request.url).
 		then(res => {
-			// try also to get data in the background, for use during next fetch
+
+			// If no data, assume we haven't fetched it yet
+			if (!res || (!res.length && !res.id))
+				return getAndCacheRestraunt(event);
+
+			// Try also to get updated data in the background, for use during next fetch
 			updateCacheFor(event.request);
 
 			return jsonResponseFrom(res);
-		}).
-		catch(console.error);
+		});
 }
 
 function handleCacheMatch(request, response) {
@@ -77,7 +83,8 @@ function handleCacheMatch(request, response) {
 			var responseToCache = response.clone();
 
 			caches.open(CACHE_NAME).
-				then(cache => cache.put(request, responseToCache));
+				then(cache => cache.put(request, responseToCache)).
+				catch(console.error);
 
 			return response;
 		});
@@ -88,25 +95,26 @@ self.addEventListener('install', (event) => {
 
 	event.waitUntil(
 		caches.open(CACHE_NAME).
-			then(function (cache) {
-				console.log('Opened cache');
-				return cache.addAll(config.cache.urls);
-			})
-	);
+			then(cache =>
+				cache.addAll(config.cache.urls)).
+			then(() => Promise.all(
+				config.cache.apiEndpoints.
+					map(ep => api[ep]()).
+					map(url => new Request(url)).
+					map(request => updateCacheFor(request)))
+			));
 });
 
 self.addEventListener('activate', (event) => {
 	//console.log(`ACTIVATE [${version.number}]`);
 
 	event.waitUntil(
-		caches.keys().then(function (cacheNames) {
-			return Promise.all(
-				cacheNames.map(function (cacheName) {
-					return caches.delete(cacheName);
-				})
-			);
-		})
-	);
+		caches.keys().then(cacheNames => 
+			Promise.all(
+				cacheNames.
+					filter(cacheName => cacheName !== CACHE_NAME).
+					map(cacheName => 
+						caches.delete(cacheName)))));
 });
 
 self.addEventListener('fetch', (event) => {
@@ -122,10 +130,10 @@ self.addEventListener('fetch', (event) => {
 		event.request.url.includes('browser-sync');
 
 	event.respondWith(
-
 		isRestrauntData ? getRestaurantData(event) :
 			isPassthrough ? fetch(event.request) :
-				caches.match(event.request).
-					then(response => handleCacheMatch(event.request, response))
+				caches.match(event.request, { ignoreSearch: true }).
+					then(response => handleCacheMatch(event.request, response)).
+					catch(console.error)
 	);
 });

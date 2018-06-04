@@ -4,12 +4,17 @@ const Config = {
         port: 1337
     },
     cache: {
-        version: '1.0.0',
+        version: '1.1.0',
         name: 'restaurant-reviews',
         urls: [
             '/',
+            '/index.html',
+            '/restaurant.html',
             '/index.js',
             '/restaurant.js'
+        ],
+        apiEndpoints: [
+            'restaurants'
         ]
     },
     db: {

@@ -1,5 +1,5 @@
 import config from '../config';
-import Cache from '../utils/cache';
+import api from './api';
 
 function distinct(arr, key) {
 	const keys = arr.map((v, i) => arr[i][key]);
@@ -11,37 +11,18 @@ function distinct(arr, key) {
  */
 export default class DBHelper {
 
-	static _cache = new Cache(1000 * 2);
-
-	/**
-	 * Database URL.
-	 */
-	static get DATABASE_URL() {
-		return `http://${config.server.host}:${config.server.port}`;
-	}
-
 	/**
 	 * Fetch all restaurants.
 	 */
 	static fetchRestaurants(callback) {
 
-		// This will minimize a rapid sequence of identical API calls before the service worker cache kicks in
-		const res = DBHelper._cache.tryGetByKey('all');
-		if (res) {
-			callback(null, res);
-			return;
-		}
-
 		const xhr = new XMLHttpRequest();
-		xhr.open('GET', `${DBHelper.DATABASE_URL}/restaurants`);
+		xhr.open('GET', api.restaurants());
 		xhr.onload = () => {
 			if (xhr.status === 200) {
-				const restaurants = JSON.parse(xhr.responseText);
-				DBHelper._cache.add('all', restaurants);
-				callback(null, restaurants);
+				callback(null, JSON.parse(xhr.responseText));
 			} else {
-				const error = (`Request failed. Returned status of ${xhr.status}`);
-				callback(error, null);
+				callback(`Request failed. Returned status of ${xhr.status}`, null);
 			}
 		};
 		xhr.send();
@@ -52,25 +33,17 @@ export default class DBHelper {
 	 */
 	static fetchRestaurantById(id, callback) {
 
-		// This will minimize a rapid sequence of identical API calls before the service worker cache kicks in
-		const res = DBHelper._cache.tryGetByKey(id);
-		if (res) {
-			callback(null, res);
-			return;
-		}
-
 		const xhr = new XMLHttpRequest();
-		xhr.open('GET', `${DBHelper.DATABASE_URL}/restaurants/${id}`);
+		xhr.open('GET', api.restaurant(id));
 		xhr.onload = () => {
-			if (xhr.status === 200) {
-				const restaurant = JSON.parse(xhr.responseText);
-				DBHelper._cache.add(id, restaurant);
-				callback(null, restaurant);
+			if (xhr.status === 200 && xhr.responseText == 'undefined') {
+				callback('Request returned no data', null);
+			} else if (xhr.status === 200) {
+				callback(null, JSON.parse(xhr.responseText));
 			} else if (xhr.status === 404) {
 				callback(`Restaurant with ID ${id} not found`, null);
 			} else {
-				const error = (`Request failed. Returned status of ${xhr.status}`);
-				callback(error, null);
+				callback(`Request failed. Returned status of ${xhr.status}`, null);
 			}
 		};
 		xhr.send();
@@ -86,8 +59,7 @@ export default class DBHelper {
 				callback(error, null);
 			} else {
 				// Filter restaurants to have only given cuisine type
-				const results = restaurants.filter(r => r.cuisine_type === cuisine);
-				callback(null, results);
+				callback(null, (restaurants || []).filter(r => r.cuisine_type === cuisine));
 			}
 		});
 	}
@@ -102,8 +74,7 @@ export default class DBHelper {
 				callback(error, null);
 			} else {
 				// Filter restaurants to have only given neighborhood
-				const results = restaurants.filter(r => r.neighborhood === neighborhood);
-				callback(null, results);
+				callback(null, (restaurants || []).filter(r => r.neighborhood === neighborhood));
 			}
 		});
 	}
@@ -117,7 +88,7 @@ export default class DBHelper {
 			if (error) {
 				callback(error, null);
 			} else {
-				let results = restaurants;
+				let results = (restaurants || []);
 				if (cuisine !== 'all') { // filter by cuisine
 					results = results.filter(r => r.cuisine_type === cuisine);
 				}
@@ -134,6 +105,8 @@ export default class DBHelper {
 			if (error) {
 				callback(error, null);
 			} else {
+				restaurants = restaurants || [];
+
 				callback(null, {
 					neighborhoods: distinct(restaurants, 'neighborhood'),
 					cuisines: distinct(restaurants, 'cuisine_type'),
@@ -142,42 +115,6 @@ export default class DBHelper {
 			}
 		});
 	}
-
-	// /**
-	//  * Fetch all neighborhoods with proper error handling.
-	//  */
-	// static fetchNeighborhoods(callback) {
-	// 	// Fetch all restaurants
-	// 	DBHelper.fetchRestaurants((error, restaurants) => {
-	// 		if (error) {
-	// 			callback(error, null);
-	// 		} else {
-	// 			// Get all neighborhoods from all restaurants
-	// 			const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
-	// 			// Remove duplicates from neighborhoods
-	// 			const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) === i);
-	// 			callback(null, uniqueNeighborhoods);
-	// 		}
-	// 	});
-	// }
-
-	// /**
-	//  * Fetch all cuisines with proper error handling.
-	//  */
-	// static fetchCuisines(callback) {
-	// 	// Fetch all restaurants
-	// 	DBHelper.fetchRestaurants((error, restaurants) => {
-	// 		if (error) {
-	// 			callback(error, null);
-	// 		} else {
-	// 			// Get all cuisines from all restaurants
-	// 			const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
-	// 			// Remove duplicates from cuisines
-	// 			const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) === i);
-	// 			callback(null, uniqueCuisines);
-	// 		}
-	// 	});
-	// }
 
 	/**
 	 * Restaurant page URL.
