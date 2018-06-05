@@ -3,10 +3,7 @@ import { waitForDOMContentLoaded, getParameterByName } from './utils/index';
 import DBHelper from './data/dbhelper';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
-import renderAddress from './components/address';
-import renderReviews from './components/reviews';
-import renderHours from './components/hours';
-import renderImage from './components/image';
+import renderRestaurant from './components/restaurant';
 import renderCopyright from './components/copyright';
 
 export default class RestaurantInfo {
@@ -24,22 +21,24 @@ export default class RestaurantInfo {
 	
 	initialize = () => {
 
+		const document = this.document;
+
 		// Render restaurant info
 		this.fetchRestaurantFromURL().
 			then(restaurant => this.restaurant = restaurant).
 			then(() => DBHelper.getReviewsForRestaurant(this.restaurant.id)).
 			then(reviews => this.restaurant.reviews = reviews || []).
-			then(() => waitForDOMContentLoaded(this.document)).
+			then(() => waitForDOMContentLoaded(document)).
 			then(() => {
-				renderBreadcrumb(this.document, this.document.getElementById('breadcrumb'), this.restaurant);
-				this.fillRestaurantHTML();
+				renderBreadcrumb(document, document.getElementById('breadcrumb'), this.restaurant);
+				renderRestaurant(document, this.restaurant);
 				this.renderStaticMap();
 			});
 
 		// Render footer component
-		waitForDOMContentLoaded(this.document).
+		waitForDOMContentLoaded(document).
 			then(() => {
-				this.document.getElementById('footer').innerHTML =
+				document.getElementById('footer').innerHTML =
 					renderCopyright();
 			});
 	}
@@ -76,49 +75,5 @@ export default class RestaurantInfo {
 				});
 			}
 		});
-	};
-
-	/**
-	 * Create restaurant HTML and add it to the webpage
-	 */
-	fillRestaurantHTML = (restaurant = this.restaurant) => {
-
-		// page title
-		this.document.title = `${restaurant.name} - Restraurant Reviews`;
-
-		// name
-		const name = this.document.getElementById('restaurant-name');
-		name.innerHTML = restaurant.name;
-
-		// neighborhood
-		const hood = this.document.getElementById('restaurant-neighborhood');
-		hood.innerHTML = restaurant.neighborhood;
-
-		// address
-		const address = this.document.getElementById('restaurant-address');
-		address.innerHTML = renderAddress(restaurant.address);
-
-		// image
-		const src = DBHelper.imageUrlForRestaurant(restaurant);
-		const image = this.document.getElementById('restaurant-img');
-		renderImage(restaurant, image, src, 'hero', DBHelper.imageUrlForRestaurant({}));
-
-		// cuisine
-		const cuisine = this.document.getElementById('restaurant-cuisine');
-		cuisine.innerHTML = restaurant.cuisine_type;
-
-		// operating hours
-		if (restaurant.operating_hours) {
-			renderHours(
-				this.document,
-				this.document.getElementById('restaurant-hours'),
-				this.restaurant.operating_hours);
-		}
-
-		// reviews
-		renderReviews(
-			this.document, 
-			this.document.getElementById('reviews-container'), 
-			this.restaurant.reviews);
 	};
 }

@@ -11,7 +11,8 @@ const hoursHtml = (operatingHours) => {
 			const date = moment(match, 'h:mm A').format('HH:mm');
 			return `<time datetime="${date}">${match}</time>`;
 		}).
-		replace(' - ', '<span class="sr-only"> through </span><span aria-hidden="true"> - </span>');
+		replace(' - ', '<span class="sr-only"> through </span><span aria-hidden="true"> - </span>').
+		replace(', ', '<br/>');
 };
 
 const headerRow = () => {
@@ -32,7 +33,7 @@ const headerRow = () => {
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
-const render = (document, root, operatingHours) => {
+const render = (document, root, operatingHours = {}) => {
 
 	root.appendChild(headerRow());
 
@@ -51,7 +52,6 @@ const render = (document, root, operatingHours) => {
 			root.appendChild(row);
 		}
 	}
-
 };
 
 export default render;
