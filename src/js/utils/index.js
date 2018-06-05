@@ -54,3 +54,8 @@ export const getParameterByName = (name, url) => {
 		return '';
 	return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
+
+export const isTrue = (value) =>
+	value === 'true' ? true :
+	value === 'false' ? false :
+	value;

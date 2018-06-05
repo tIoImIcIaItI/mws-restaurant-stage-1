@@ -35,14 +35,14 @@
         "groups": {
             "thumb": [
                 {
-                    "width": 100,
-                    "tag": "xs",
-                    "size": "(max-width: 43em) 79px"
-                },
-                {
                     "width": 312,
                     "tag": "sm",
-                    "size": "294px"
+                    "size": "(max-width: 43em) 312px"
+                },
+                {
+                    "width": 640,
+                    "tag": "md",
+                    "size": "640px"
                 }
             ],
             "hero": [

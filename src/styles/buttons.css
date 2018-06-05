@@ -1,0 +1,23 @@
+.btn {
+    margin: 0 0.2em;
+    padding: 0.25em;
+    border-radius: 0;
+    background: transparent;
+}
+
+.btn-icon {
+    border-radius: 0.5em;
+    font-size: 2em;
+}
+
+.btn:active {
+    background-color: #aaa;
+}
+
+.btn:hover {
+    background-color: #eaeaea;
+}
+
+.btn:focus {
+    background-color: #ddd;
+}

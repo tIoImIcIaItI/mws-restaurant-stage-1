@@ -1,11 +1,12 @@
 import 'intersection-observer'; // polyfill IntersectionObserver
 import { waitForDOMContentLoaded } from './utils/index';
 import DBHelper from './data/dbhelper';
+import db from './data/db';
 import Observer from './utils/observer';
 import Map from './components/map';
-import renderAddress from './components/address';
-import renderImage from './components/image';
+import { isTrue } from './utils';
 import renderCopyright from './components/copyright';
+import renderRestaurant from './components/restaurant-summary';
 
 export default class Main {
 
@@ -67,31 +68,31 @@ export default class Main {
 
 		// Load initial data
 		this.fetchInitialData().
-			then(data => {
-				this.neighborhoods = data.neighborhoods;
-				this.cuisines = data.cuisines;
-				this.restaurants = data.restaurants;
-			}).
-			then(() => waitForDOMContentLoaded(this.document)).
-			then(() => {
-				this.fillNeighborhoodsHTML();
-				this.fillCuisinesHTML();
-				this.processRestaurants();
-			});
+		then(data => {
+			this.neighborhoods = data.neighborhoods;
+			this.cuisines = data.cuisines;
+			this.restaurants = data.restaurants;
+		}).
+		then(() => waitForDOMContentLoaded(this.document)).
+		then(() => {
+			this.fillNeighborhoodsHTML();
+			this.fillCuisinesHTML();
+			this.processRestaurants();
+		});
 
 		waitForDOMContentLoaded(this.document).
-			then(() => {
+		then(() => {
 
-				// Render the footer component
-				this.document.getElementById('footer').innerHTML = 
-					renderCopyright();
+			// Render the footer component
+			this.document.getElementById('footer').innerHTML =
+				renderCopyright();
 
-				// Wire up and reset the map toggle
-				this.document.getElementById('show-map').addEventListener('change', event => 
-					this.onShowMapChanged(event.target.checked)
-				);
-				this.onShowMapChanged(false);
-			});
+			// Wire up and reset the map toggle
+			this.document.getElementById('show-map').addEventListener('change', event =>
+				this.onShowMapChanged(event.target.checked)
+			);
+			this.onShowMapChanged(false);
+		});
 	}
 
 	onShowMapChanged = (showMap) => {
@@ -153,7 +154,7 @@ export default class Main {
 
 	processRestaurants = () => {
 		this.fillRestaurantsHTML();
-				
+
 		if (this.map)
 			this.map.addMarkersToMap();
 	};
@@ -203,64 +204,28 @@ export default class Main {
 		this.restaurants = restaurants;
 	};
 
+	setIsFavoriteRestaurant = (id, val) =>
+		DBHelper.
+			setIsFavoriteRestaurant(id, val).
+			then(db.cacheRestaurant);
+
 	/**
 	 * Create all restaurants HTML and add them to the webpage.
 	 */
 	fillRestaurantsHTML = (restaurants = this.restaurants) => {
 		const ul = document.getElementById('restaurants-list');
 
-		restaurants.forEach(restaurant => 
-			ul.append(this.createRestaurantHTML(restaurant))
+		var list = [
+			...restaurants.filter(r => isTrue(r.is_favorite)),
+			...restaurants.filter(r => !isTrue(r.is_favorite))
+		];
+
+		list.forEach(restaurant =>
+			ul.append(renderRestaurant(
+				this.document,
+				this.observer,
+				restaurant,
+				(id, val) => this.setIsFavoriteRestaurant(id, val)))
 		);
-	};
-
-	/**
-	 * Create restaurant HTML.
-	 */
-	createRestaurantHTML = (restaurant) => {
-		const li = this.document.createElement('li');
-		li.className = 'card card-1';
-
-		const article = this.document.createElement('article');
-		li.append(article);
-
-		const name = this.document.createElement('h2');
-		name.innerHTML = restaurant.name;
-		article.append(name);
-
-		const info = this.document.createElement('div');
-		info.className = 'restaurant-info'; {
-
-			const image = this.document.createElement('img');
-			const src = DBHelper.imageUrlForRestaurant(restaurant);
-			renderImage(
-				restaurant, image, src, 'thumb', 
-				{ 
-					src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', 
-					style: { height: '100vh' }
-				}, 
-				this.observer);
-			info.append(image);
-
-			const location = this.document.createElement('div');
-			location.className = 'restaurant-location'; {
-				const neighborhood = this.document.createElement('p');
-				neighborhood.innerHTML = restaurant.neighborhood;
-				location.append(neighborhood);
-
-				const address = this.document.createElement('p');
-				address.innerHTML = renderAddress(restaurant.address);
-				location.append(address);
-			}
-			info.append(location);
-		}
-		article.append(info);
-
-		const more = this.document.createElement('a');
-		more.innerHTML = `<span aria-hidden="true">View Details</span><span class="sr-only">${restaurant.name}</span>`;
-		more.href = DBHelper.urlForRestaurant(restaurant);
-		article.append(more);
-
-		return li;
 	};
 }
