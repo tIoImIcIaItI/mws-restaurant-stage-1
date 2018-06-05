@@ -11,6 +11,30 @@ function distinct(arr, key) {
  */
 export default class DBHelper {
 
+	static getReviewsForRestaurant(id) {
+		return fetch(api.reviewsForRestaurant(id)).
+		then(response => {
+
+			if (!response || response.status !== 200)
+				return response;
+
+			return response.json();//.
+				//then(db.cacheReviewsFor(id));
+		})
+	}
+
+	static setIsFavoriteRestaurant(id, isFavorite) {
+		return fetch(api.favorite(id, isFavorite), { method: 'PUT' }).
+		then(response => {
+
+			if (!response || response.status !== 200)
+				return response;
+
+			return response.json().
+				then(db.cacheRestaurant);
+		})
+	}
+
 	/**
 	 * Fetch all restaurants.
 	 */

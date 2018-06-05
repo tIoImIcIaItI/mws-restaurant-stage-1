@@ -4,7 +4,7 @@ import DBHelper from './data/dbhelper';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
 import renderAddress from './components/address';
-import renderReview from './components/review';
+import renderReviews from './components/reviews';
 import renderHours from './components/hours';
 import renderImage from './components/image';
 import renderCopyright from './components/copyright';
@@ -27,13 +27,13 @@ export default class RestaurantInfo {
 		// Render restaurant info
 		this.fetchRestaurantFromURL().
 			then(restaurant => this.restaurant = restaurant).
+			then(() => DBHelper.getReviewsForRestaurant(this.restaurant.id)).
+			then(reviews => this.restaurant.reviews = reviews || []).
 			then(() => waitForDOMContentLoaded(this.document)).
 			then(() => {
-				if (this.restaurant) {
-					renderBreadcrumb(this.document, this.document.getElementById('breadcrumb'), this.restaurant);
-					this.fillRestaurantHTML();
-					this.renderStaticMap();
-				}
+				renderBreadcrumb(this.document, this.document.getElementById('breadcrumb'), this.restaurant);
+				this.fillRestaurantHTML();
+				this.renderStaticMap();
 			});
 
 		// Render footer component
@@ -83,26 +83,31 @@ export default class RestaurantInfo {
 	 */
 	fillRestaurantHTML = (restaurant = this.restaurant) => {
 
+		// page title
 		this.document.title = `${restaurant.name} - Restraurant Reviews`;
 
+		// name
 		const name = this.document.getElementById('restaurant-name');
 		name.innerHTML = restaurant.name;
 
+		// neighborhood
 		const hood = this.document.getElementById('restaurant-neighborhood');
 		hood.innerHTML = restaurant.neighborhood;
 
+		// address
 		const address = this.document.getElementById('restaurant-address');
 		address.innerHTML = renderAddress(restaurant.address);
 
+		// image
 		const src = DBHelper.imageUrlForRestaurant(restaurant);
 		const image = this.document.getElementById('restaurant-img');
-		renderImage(
-			restaurant, image, src, 'hero', DBHelper.imageUrlForRestaurant({}));
+		renderImage(restaurant, image, src, 'hero', DBHelper.imageUrlForRestaurant({}));
 
+		// cuisine
 		const cuisine = this.document.getElementById('restaurant-cuisine');
 		cuisine.innerHTML = restaurant.cuisine_type;
 
-		// fill operating hours
+		// operating hours
 		if (restaurant.operating_hours) {
 			renderHours(
 				this.document,
@@ -110,29 +115,10 @@ export default class RestaurantInfo {
 				this.restaurant.operating_hours);
 		}
 
-		// fill reviews
-		this.fillReviewsHTML();
-	};
-
-	/**
-	 * Create all reviews HTML and add them to the webpage.
-	 */
-	fillReviewsHTML = (reviews = this.restaurant.reviews) => {
-		const container = this.document.getElementById('reviews-container');
-
-		if (!reviews) {
-			const noReviews = this.document.createElement('p');
-			noReviews.innerHTML = 'No reviews yet!';
-			container.appendChild(noReviews);
-			return;
-		}
-
-		const ul = this.document.getElementById('reviews-list');
-		reviews.forEach(review => {
-			const li = this.document.createElement('li');
-			li.appendChild(renderReview(this.document, review));
-			ul.appendChild(li);
-		});
-		container.appendChild(ul);
+		// reviews
+		renderReviews(
+			this.document, 
+			this.document.getElementById('reviews-container'), 
+			this.restaurant.reviews);
 	};
 }
