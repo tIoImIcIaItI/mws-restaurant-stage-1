@@ -1,9 +1,9 @@
-import '../../styles/buttons.css';
-import '../../styles/favorite.css';
+import '../../styles/cards.css';
 import DBHelper from '../data/dbhelper';
 import { isTrue } from '../utils';
 import renderAddress from './address';
 import renderImage from './image';
+import renderFavorite from './favorite';
 
 const placeholder = {
     src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
@@ -66,36 +66,13 @@ const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
         details.href = DBHelper.urlForRestaurant(restaurant);
         footer.append(details);
 
-        // is favorite
-
-        const isFav = isTrue(restaurant.is_favorite);
-
-        const label = document.createElement('label');
-        label.className = 'container';
-        footer.append(label);
-
-        const descriptor = document.createElement('span');
-        descriptor.className = 'sr-only';
-        descriptor.innerHTML = 'Favorite';
-        descriptor.setAttribute('for', `is-favorite-${restaurant.id}`);
-        label.append(descriptor);
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = isFav;
-        checkbox.id = `is-favorite-${restaurant.id}`;
-        checkbox.addEventListener('change', event => setIsFavoriteRestaurant(restaurant.id, !isFav));
-        label.append(checkbox);
-
-        const widget = document.createElement('button');
-        widget.setAttribute('aria-hidden', 'true');
-        widget.className = `btn btn-icon is-favorite fas fa-heart`;
-        label.append(widget);
-
-        const widget2 = document.createElement('button');
-        widget2.setAttribute('aria-hidden', 'true');
-        widget2.className = `btn btn-icon is-not-favorite far fa-heart`;
-        label.append(widget2);
+        // favorite checkbox
+        renderFavorite(
+            document,
+            footer,
+            `is-favorite-${restaurant.id}`,
+            isTrue(restaurant.is_favorite),
+            isFavorite => setIsFavoriteRestaurant(restaurant.id, isFavorite));
     }
     article.append(footer);
 
