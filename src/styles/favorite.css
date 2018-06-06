@@ -16,7 +16,7 @@
 }
 
 .container input:active~.favorite {
-    background-color: #aaa;
+    background-color: #bbb;
 }
 
 .container input:focus~.favorite {

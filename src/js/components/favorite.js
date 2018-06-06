@@ -2,11 +2,7 @@ import '../../styles/buttons.css';
 import '../../styles/favorite.css';
 import { debug } from 'util';
 
-const className = (newVal) => newVal ? 
-    'btn btn-icon favorite is-favorite fas fa-heart' : 
-    'btn btn-icon favorite is-not-favorite far fa-heart';
-
-const render = (document, container, id, isFav, onChange) => {
+const render = (document, container, id, value, getClassName, onChange) => {
 
     const label = document.createElement('label'); {
         label.className = 'container';
@@ -20,18 +16,18 @@ const render = (document, container, id, isFav, onChange) => {
 
         const widgetId = `${id}-widget`;
 
-        const widget = document.createElement('span');
+        const widget = document.createElement('svg');
         widget.setAttribute('aria-hidden', 'true');
         widget.id = widgetId;
-        widget.className = className(isFav);
+        widget.className = getClassName(value);
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.checked = isFav;
+        checkbox.checked = value;
         checkbox.id = id;
         checkbox.addEventListener('change', event => {
             const newVal = checkbox.checked; 
-            document.getElementById(widgetId).setAttribute('class', className(newVal));
+            document.getElementById(widgetId).setAttribute('class', getClassName(newVal));
             onChange(newVal);
         });
         label.append(checkbox);

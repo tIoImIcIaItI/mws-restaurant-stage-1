@@ -1,10 +1,12 @@
 import config from './config';
-import { waitForDOMContentLoaded, getParameterByName } from './utils/index';
+import { waitForDOMContentLoaded, getParameterByName, isTrue } from './utils/index';
 import DBHelper from './data/dbhelper';
+import db from './data/db';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
 import renderRestaurant from './components/restaurant';
 import renderCopyright from './components/copyright';
+import renderFavorite from './components/favorite';
 
 export default class RestaurantInfo {
 
@@ -31,6 +33,7 @@ export default class RestaurantInfo {
 			then(() => waitForDOMContentLoaded(document)).
 			then(() => {
 				renderBreadcrumb(document, document.getElementById('breadcrumb'), this.restaurant);
+				this.renderFab(document, this.restaurant);
 				renderRestaurant(document, this.restaurant);
 				this.renderStaticMap();
 			});
@@ -42,6 +45,21 @@ export default class RestaurantInfo {
 					renderCopyright();
 			});
 	}
+
+	setIsFavoriteRestaurant = (id, val) =>
+		DBHelper.
+			setIsFavoriteRestaurant(id, val).
+			then(db.cacheRestaurant);
+
+	renderFab = (document, restaurant) => {
+        renderFavorite(
+            document,
+            document.getElementById('fab'),
+            `is-favorite-${restaurant.id}`,
+			isTrue(restaurant.is_favorite),
+			val => val ? `btn btn-fab favorite is-favorite fas fa-heart fa-2x` : `btn btn-fab favorite is-not-favorite far fa-heart fa-2x`,
+			isFavorite => this.setIsFavoriteRestaurant(restaurant.id, isFavorite));
+	};
 
 	renderStaticMap = () => {
 		if (!this.map || !this.restaurant) return;

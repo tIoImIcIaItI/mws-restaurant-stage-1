@@ -12,10 +12,7 @@ h3 {
         letter-spacing: 0.1em;
     }
 
-/* ====================== Restaurant Details ====================== */
-.inside header {
-    width: 100%;
-}
+/* ================================== Map ========================= */
 
 .inside #map-container {
     background: blue none repeat scroll 0 0;
@@ -33,6 +30,16 @@ h3 {
     .inside #map img {
         height: 100%;
     }
+
+/* ====================== Restaurant Details ====================== */
+.inside header {
+    width: 100%;
+}
+
+#restaurant-body {
+    margin: 0 1em;
+    padding: 1em 0;
+}
 
 #restaurant-name {
     padding: 0.5em;
@@ -52,9 +59,8 @@ h3 {
     object-fit: cover;
 }
 
-#restaurant-body {
-    margin: 0 1em;
-    padding: 1em 0;
+#fab {
+    margin-bottom: -2em;
 }
 
 /* ====================== Reviews ================================= */

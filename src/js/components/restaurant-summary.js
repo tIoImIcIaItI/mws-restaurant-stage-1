@@ -72,6 +72,7 @@ const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
             footer,
             `is-favorite-${restaurant.id}`,
             isTrue(restaurant.is_favorite),
+            val => val ? `btn btn-icon favorite is-favorite fas fa-heart` : `btn btn-icon favorite is-not-favorite far fa-heart`,
             isFavorite => setIsFavoriteRestaurant(restaurant.id, isFavorite));
     }
     article.append(footer);
