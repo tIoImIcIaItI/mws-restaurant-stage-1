@@ -6,6 +6,12 @@ function distinct(arr, key) {
 	return keys.filter((v, i) => keys.indexOf(v) === i);
 }
 
+const writeOptions = (method, data) => ({ 
+	method: method, 
+	body: JSON.stringify(data),
+	headers: { 'content-type': 'application/json' } }
+);
+
 /**
  * Common database helper functions.
  */
@@ -13,6 +19,37 @@ export default class DBHelper {
 
 	static getReviewsForRestaurant = (id) => 
 		fetch(api.reviewsForRestaurant(id)).
+			then(response => {
+				if (!response || response.status !== 200)
+					throw Error(response);
+				return response.json();
+			});
+
+	static addReview = (review) => 
+		fetch(api.addReview(), writeOptions('POST', {
+			restaurant_id: review.restaurant_id,
+			name: review.name,
+			rating: review.rating,
+			comments: review.comments })).
+		then(response => {
+			if (!response || response.status !== 200)
+				throw Error(response);
+			return response.json();
+		});
+
+	static updateReview = (review) => 
+		fetch(api.updateReview(review.id), writeOptions('PUT', {
+			name: review.name,
+			rating: review.rating,
+			comments: review.comments })).
+		then(response => {
+				if (!response || response.status !== 200)
+					throw Error(response);
+				return response.json();
+			});
+
+	static deleteReview = (id) => 
+		fetch(api.updateReview(id), { method: 'DELETE' }).
 			then(response => {
 				if (!response || response.status !== 200)
 					throw Error(response);

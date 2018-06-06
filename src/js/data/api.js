@@ -25,6 +25,17 @@ class RestaurantsApi {
 		return `${RestaurantsApi.base}/reviews/?restaurant_id=${id}`;
 	}
 
+	static addReview(){
+		return `${RestaurantsApi.base}/reviews/`;
+	}
+
+	static updateReview(id){
+		return `${RestaurantsApi.base}/reviews/${id}`;
+	}
+
+	static deleteReview(id){
+		return `${RestaurantsApi.base}/reviews/${id}`;
+	}
 }
 
 export default RestaurantsApi;
