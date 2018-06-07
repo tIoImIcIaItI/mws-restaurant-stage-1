@@ -32,7 +32,7 @@ export default class DBHelper {
 			rating: review.rating,
 			comments: review.comments })).
 		then(response => {
-			if (!response || response.status !== 200)
+			if (!response || response.status !== 201)
 				throw Error(response);
 			return response.json();
 		});

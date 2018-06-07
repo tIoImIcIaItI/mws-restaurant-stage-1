@@ -65,6 +65,14 @@ h3 {
 
 /* ====================== Reviews ================================= */
 
+.review-form {
+    margin: 0;
+}
+
+.review-form h4 {
+    color: #4C5566;
+}
+
 #reviews-list {
     margin: 0;
     padding: 0;

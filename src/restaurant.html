@@ -75,11 +75,82 @@
             </section>
 
             <section id="reviews-container">
+                
                 <h3 id="reviews-header">
                     <span class="label"><i class="far fa-comments"></i><span class="label-name">Reviews</span></span>
                 </h3>
 
+                <div class="review-form">
+
+                    <h4>
+                        <button id="btn-show-form" class="btn btn-text">Leave a review</button>
+                    </h4>
+                
+                    <form class="review" action="#" id="new-review-form" novalidate style="display: none;">
+                
+                        <!-- NAME -->
+                        <fieldset>
+                            <legend class="sr-only">Name</legend>
+                
+                            <label class="sr-only control-label" for="new-review-name" aria-label="Name"></label>
+                
+                            <input type="text" id="new-review-name" class="form-control"
+                                placeholder="publicly posting as?" required maxlength="128" data-autofocus/>
+                
+                            <div id="new-review-name-error" data-error-for="new-review-name" class="validation-error text-danger invisible"></div>
+                        </fieldset>
+
+                        <!-- TODO: RATING -->
+                        <!-- <fieldset>
+                            <legend class="sr-only">Rating</legend>
+                
+                            <label class="sr-only control-label" for="new-review-rating" aria-label="{{$ctrl.review.ratingText()}}"></label>
+                
+                            <rating-interactive id="new-review-rating" ng-model="$ctrl.review.rating" data-value="$ctrl.review.rating" required aria-labelledby="new-review-rating-label"></rating-interactive>
+                
+                            <span id="new-review-rating-label" class="sr-only">{{$ctrl.review.ratingText()}}</span>
+                
+                            <div id="new-review-rating-error" data-error-for="new-review-rating" class="validation-error text-danger invisible"></div>
+                        </fieldset> -->
+                        
+                        <!-- COMMENTS -->
+                        <fieldset>
+                            <legend class="sr-only">Comments</legend>
+                
+                            <label class="sr-only control-label" for="new-review-comments" aria-label="Comments"></label>
+                
+                            <textarea id="new-review-comments" class="form-control"
+                                placeholder="what do you think of this place?"
+                                required rows="4" maxlength="1024"></textarea>
+                
+                            <div id="new-review-comments-error" data-error-for="new-review-comments" class="validation-error text-danger invisible"></div>
+                        </fieldset>
+                
+                        <div class="pull-right">
+
+                            <!-- CANCEL BUTTON -->
+                            <div >
+                                <button id="new-review-btn-cancel" class="btn btn-text" type="button" title="Cancel writing my review" aria-describedby="new-review-btn-cancel-desc">
+                                    Cancel
+                                    <span id="new-review-btn-cancel-desc" class="sr-only">Cancel</span>
+                                </button>
+                            </div>
+
+                            <!-- SUBMIT BUTTON -->
+                            <div >
+                                <button id="new-review-btn-submit" class="btn btn-primary" type="submit" title="Submit my review" aria-describedby="new-review-btn-submit-desc">
+                                    Submit
+                                    <span id="new-review-btn-submit-desc" class="sr-only">Submit my review</span>
+                                </button>
+                            </div>
+
+                        </div>
+                
+                    </form>
+                </div>
+
                 <ul id="reviews-list" role="region" aria-live="polite"></ul>
+
             </section>
 
         </div>

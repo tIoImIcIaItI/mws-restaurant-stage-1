@@ -1,7 +1,8 @@
-import config from './config';
+import moment from 'moment-mini';
 import { waitForDOMContentLoaded, getParameterByName, isTrue } from './utils/index';
 import DBHelper from './data/dbhelper';
 import db from './data/db';
+import ReviewForm from './forms/review';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
 import renderRestaurant from './components/restaurant';
@@ -13,6 +14,8 @@ export default class RestaurantInfo {
 	constructor(window, document) {
 		this.window = window;
 		this.document = document;
+		this.reviewFormVm = null;
+		this.nextId = 0;
 
 		this.map = new StaticMap(
 			this.document,
@@ -20,7 +23,13 @@ export default class RestaurantInfo {
 
 		this.initialize();
 	}
+
+	getNextId = () => --this.nextId;
 	
+	sortReviews = (reviews) =>
+		reviews.sort((x, y) => 
+			moment(y.updatedAt).valueOf() - moment(x.updatedAt).valueOf());
+
 	initialize = () => {
 
 		const document = this.document;
@@ -29,7 +38,7 @@ export default class RestaurantInfo {
 		this.fetchRestaurantFromURL().
 			then(restaurant => this.restaurant = restaurant).
 			then(() => DBHelper.getReviewsForRestaurant(this.restaurant.id)).
-			then(reviews => this.restaurant.reviews = reviews || []).
+			then(reviews => this.restaurant.reviews = this.sortReviews(reviews || [])).
 			then(() => waitForDOMContentLoaded(document)).
 			then(() => {
 				renderBreadcrumb(document, document.getElementById('breadcrumb'), this.restaurant);
@@ -38,11 +47,72 @@ export default class RestaurantInfo {
 				this.renderStaticMap();
 			});
 
-		// Render footer component
 		waitForDOMContentLoaded(document).
 			then(() => {
+
+				// Render footer component
+
 				document.getElementById('footer').innerHTML =
 					renderCopyright();
+
+				// Wire up review form
+
+				const form = document.getElementById('new-review-form');
+				const showBtn = document.getElementById('btn-show-form');
+
+				showBtn.addEventListener('click', event => {
+
+					form.style.display = 'initial';
+					showBtn.style.display = 'none';
+
+					if (!this.reviewFormVm) {
+						this.reviewFormVm = new ReviewForm(this.document, alert, form);
+
+						this.reviewFormVm.preFormSubmit = () => {
+							return this.reviewFormVm.updateValidity();
+						};
+
+						this.reviewFormVm.onSubmitValid = () => {
+
+							form.style.display = 'none';
+							showBtn.style.display = 'initial';
+							
+							const { name, rating, comments } = 
+								this.reviewFormVm.getFormData();
+
+							const review = {
+								id: this.getNextId(),
+								restaurant_id: this.restaurant.id,
+								name, rating: rating || 42, comments
+							};
+							
+							console.log(review);
+							
+							DBHelper.addReview(review);
+
+							this.restaurant.reviews.unshift(review);
+
+							// TODO: add review to local caches
+
+							// TODO: deal with offline or 400/500 submit
+						};
+
+						// this.reviewFormVm.postFormSubmit = () => {
+
+						// };
+					}
+					else {
+						this.reviewFormVm.reset();						
+					}
+
+					this.reviewFormVm.setInitialFocus();
+				});
+
+				document.getElementById('new-review-btn-cancel').addEventListener('click', event => {
+					form.style.display = 'none';
+					showBtn.style.display = 'initial';
+				});
+
 			});
 	}
 

@@ -1,0 +1,65 @@
+/* Status colors from Bootstrap 4 */
+
+.invisible {
+    visibility: hidden;
+}
+
+fieldset {
+    border: none;
+}
+
+textarea {
+    width: 100%;
+}
+
+.validation-error {
+    font-size: 1em;
+    line-height: 1.2em;
+    min-height: 1.2em; /* prevent collapse causing sliding content */
+    margin: 0.25em;
+    padding: 0;
+    font-style: italic;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: #fff;
+    border: none;
+    border-bottom: 2px solid #346;
+    border-radius: .25rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    transition: border .15s ease-in-out;
+}
+
+fieldset:not(.has-error) fieldset:not(.has-success) .form-control:hover {
+    border-bottom-color: #2D7EBC;
+}
+
+fieldset:not(.has-error) fieldset:not(.has-success) .form-control:focus{
+    border-bottom-color: #2D7EBC;
+}
+
+fieldset.has-error textarea {
+    border-bottom-color: #dc3545;
+}
+
+fieldset.has-error input {
+    border-bottom-color: #dc3545;
+}
+
+fieldset.has-success textarea {
+    border-bottom-color: #28a745;
+}
+
+fieldset.has-success input {
+    border-bottom-color: #28a745;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}

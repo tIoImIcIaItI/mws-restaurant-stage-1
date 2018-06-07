@@ -7,6 +7,7 @@
     margin: 0 0.2em;
     padding: 0.25em;
     border-radius: 0;
+    border-width: 0;
     background: transparent;
 }
 
@@ -26,6 +27,8 @@
     border-radius: 0.5em;
     font-size: 2em;
 }
+
+/* FAB */
 
 .btn-fab {
     border-radius: 50%;
@@ -48,4 +51,49 @@
     transform: translate(1px, 1px);
     transition: translate 0.15s ease-out;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+/* TEXT */
+
+.btn-text {
+    color: #2D7EBC;
+    background-color: transparent;
+    display: inline-block;
+    margin: 0.5em;
+    padding: 0.5rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 0.25rem;
+}
+
+/* PRIMARY */
+
+.btn-primary {
+    color: snow;
+    background-color: #2D7EBC;
+    display: inline-block;
+    margin: 0.5em;
+    padding: 0.5rem;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+    background-color: #1B4B70;
+}
+
+.btn-primary:focus {
+    background-color: #1B4B70;
+}
+
+.btn-primary:active {
+    background-color: #1F557F;
+    transform: translate(1px, 1px);
+    transition: translate 0.15s ease-out;
+    box-shadow: none;
 }
