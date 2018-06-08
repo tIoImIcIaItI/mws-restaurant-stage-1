@@ -6,6 +6,7 @@ import ReviewForm from './forms/review';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
 import renderRestaurant from './components/restaurant';
+import renderReviews from './components/reviews';
 import renderCopyright from './components/copyright';
 import renderFavorite from './components/favorite';
 
@@ -86,11 +87,14 @@ export default class RestaurantInfo {
 								name, rating: rating || 42, comments
 							};
 							
-							console.log(review);
-							
-							DBHelper.addReview(review);
-
 							this.restaurant.reviews.unshift(review);
+
+							renderReviews(
+								document,
+								document.getElementById('reviews-container'),
+								this.restaurant.reviews);
+
+							DBHelper.addReview(review);
 
 							// TODO: add review to local caches
 
