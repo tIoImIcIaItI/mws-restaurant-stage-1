@@ -31,6 +31,48 @@ export default class RestaurantInfo {
 		reviews.sort((x, y) => 
 			moment(y.updatedAt).valueOf() - moment(x.updatedAt).valueOf());
 
+	initializeReviewForm = (form, showBtn) => {
+
+		this.reviewFormVm = new ReviewForm(
+			this.document, this.window.alert, form);
+
+		this.reviewFormVm.preFormSubmit = () => {
+			return this.reviewFormVm.updateValidity();
+		};
+
+		this.reviewFormVm.onSubmitValid = () => {
+
+			form.style.display = 'none';
+			showBtn.style.display = 'initial';
+			
+			const { name, rating, comments } = 
+				this.reviewFormVm.getFormData();
+
+			const review = {
+				id: this.getNextId(),
+				restaurant_id: this.restaurant.id,
+				name, rating: rating || 42, comments
+			};
+			
+			this.restaurant.reviews.unshift(review);
+
+			renderReviews(
+				this.document,
+				this.document.getElementById('reviews-container'),
+				this.restaurant.reviews);
+
+			db.cacheReviews(this.restaurant.reviews);
+
+			DBHelper.addReview(review);
+
+			// TODO: deal with offline or 400/500 submit
+		};
+
+		// this.reviewFormVm.postFormSubmit = () => {
+
+		// };
+	};
+
 	initialize = () => {
 
 		const document = this.document;
@@ -66,48 +108,10 @@ export default class RestaurantInfo {
 					form.style.display = 'initial';
 					showBtn.style.display = 'none';
 
-					if (!this.reviewFormVm) {
-						this.reviewFormVm = new ReviewForm(this.document, alert, form);
-
-						this.reviewFormVm.preFormSubmit = () => {
-							return this.reviewFormVm.updateValidity();
-						};
-
-						this.reviewFormVm.onSubmitValid = () => {
-
-							form.style.display = 'none';
-							showBtn.style.display = 'initial';
-							
-							const { name, rating, comments } = 
-								this.reviewFormVm.getFormData();
-
-							const review = {
-								id: this.getNextId(),
-								restaurant_id: this.restaurant.id,
-								name, rating: rating || 42, comments
-							};
-							
-							this.restaurant.reviews.unshift(review);
-
-							renderReviews(
-								document,
-								document.getElementById('reviews-container'),
-								this.restaurant.reviews);
-
-							DBHelper.addReview(review);
-
-							// TODO: add review to local caches
-
-							// TODO: deal with offline or 400/500 submit
-						};
-
-						// this.reviewFormVm.postFormSubmit = () => {
-
-						// };
-					}
-					else {
+					if (!this.reviewFormVm)
+						this.initializeReviewForm(form, showBtn);
+					else
 						this.reviewFormVm.reset();						
-					}
 
 					this.reviewFormVm.setInitialFocus();
 				});

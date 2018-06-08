@@ -20,16 +20,6 @@ export const jsonResponseFrom = (obj) => {
 		});
 };
 
-export const idFrom = (url) => {
-	const regex = /\/restaurants\/(\d+)$/i;
-
-	const id = (url || '').match(regex);
-
-	return id && id.length >= 2 && id[1] ?
-		parseInt(id[1], 10) :
-		null;
-};
-
 export const waitForDOMContentLoaded = (document) => {
 	return new Promise(resolve => {
 		if (/comp|inter|loaded/.test(document.readyState))

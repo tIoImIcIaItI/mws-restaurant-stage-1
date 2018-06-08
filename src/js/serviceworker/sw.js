@@ -5,10 +5,22 @@
 import config from '../config';
 import db from '../data/db';
 import api from '../data/api';
-import { jsonResponseFrom, idFrom } from '../utils';
+import { jsonResponseFrom, getParameterByName } from '../utils';
 
 const version = { number: config.cache.version };
 const CACHE_NAME = `restaurant-reviews-${version.number}`;
+
+// RESTAURANTS
+
+const idFrom = (url) => {
+	const regex = /\/restaurants\/(\d+)$/i;
+
+	const id = (url || '').match(regex);
+
+	return id && id.length >= 2 && id[1] ?
+		parseInt(id[1], 10) :
+		null;
+};
 
 function updateCacheFor(request) {
 	return fetch(request).
@@ -19,7 +31,7 @@ function updateCacheFor(request) {
 
 			return response.json().
 				then(db.cacheRestaurant);
-		})
+		});
 }
 
 function getAndCacheRestraunt(event) {
@@ -33,7 +45,7 @@ function getAndCacheRestraunt(event) {
 				then(db.cacheRestaurant);
 
 			return response;
-		})
+		});
 }
 
 function tryGetFromCache(url) {
@@ -61,6 +73,78 @@ function getRestaurantData(event) {
 			return jsonResponseFrom(res);
 		});
 }
+
+// REVIEWS
+
+const restaurantIdFromReviews = (url) => {
+	var id = getParameterByName('restaurant_id', url);
+
+	return id ? parseInt(id, 10) : null;
+};
+
+// const reviewIdFrom = (url) => {
+// 	const regex = /\/reviews\/(\d+)$/i;
+
+// 	const id = (url || '').match(regex);
+
+// 	return id && id.length >= 2 && id[1] ?
+// 		parseInt(id[1], 10) :
+// 		null;
+// };
+
+function updateCacheForReviews(request) {
+	return fetch(request).
+		then(response => {
+
+			if (!response || response.status !== 200)
+				return response;
+
+			return response.json().
+				then(db.cacheReviews);
+		});
+}
+
+function getAndCacheReviews(event) {
+	return fetch(event.request).
+		then(response => {
+
+			if (!response || response.status !== 200)
+				return response;
+
+			response.clone().json().
+				then(db.cacheReviews);
+
+			return response;
+		})
+}
+
+function tryGetReviewFromCache(url) {
+
+	const restaurantId = restaurantIdFromReviews(url);
+	// const id = reviewIdFrom(url);
+
+	// return //id ?
+		//db.tryGetCachedReview(id) :
+		return db.tryGetAllCachedReviewsFor(restaurantId);
+}
+
+function getReviewData(event) {
+	//console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
+
+	return tryGetReviewFromCache(event.request.url).
+		then(res => {
+
+			// If no data, assume we haven't fetched it yet
+			if (!res || (!res.length && !res.id))
+				return getAndCacheReviews(event);
+
+			// Try also to get updated data in the background, for use during next fetch
+			updateCacheForReviews(event.request);
+
+			return jsonResponseFrom(res);
+		});
+}
+
 
 function handleCacheMatch(request, response) {
 
@@ -101,7 +185,7 @@ self.addEventListener('install', (event) => {
 				config.cache.apiEndpoints.
 					map(ep => api[ep]()).
 					map(url => new Request(url)).
-					map(request => updateCacheFor(request)))
+					map(updateCacheFor))
 			));
 });
 
@@ -124,6 +208,10 @@ self.addEventListener('fetch', (event) => {
 		event.request.method === 'GET' &&
 		event.request.url.includes('/restaurants');
 
+	const isReviewData =
+		event.request.method === 'GET' &&
+		event.request.url.includes('/reviews');
+
 	const isPassthrough =
 		event.request.method === 'POST' ||
 		event.request.url.includes('sockjs-node') ||
@@ -131,6 +219,7 @@ self.addEventListener('fetch', (event) => {
 
 	event.respondWith(
 		isRestrauntData ? getRestaurantData(event) :
+		isReviewData ? getReviewData(event) :
 			isPassthrough ? fetch(event.request) :
 				caches.match(event.request, { ignoreSearch: true }).
 					then(response => handleCacheMatch(event.request, response)).
