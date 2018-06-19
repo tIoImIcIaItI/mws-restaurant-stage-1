@@ -135,7 +135,9 @@ export default class RestaurantInfo {
             document.getElementById('fab'),
             `is-favorite-${restaurant.id}`,
 			isTrue(restaurant.is_favorite),
-			val => val ? `btn btn-fab favorite is-favorite fas fa-heart fa-2x` : `btn btn-fab favorite is-not-favorite far fa-heart fa-2x`,
+			val => val ? 
+				'btn btn-fab favorite is-favorite svg-inline--fa fa-w-16' : 
+				'btn btn-fab favorite is-not-favorite svg-inline--fa fa-w-16',
 			isFavorite => this.setIsFavoriteRestaurant(restaurant.id, isFavorite));
 	};
 
