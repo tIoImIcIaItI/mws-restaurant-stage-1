@@ -4,7 +4,7 @@
 
 import config from '../config';
 import db from '../data/db';
-import api from '../data/api';
+import api, { writeOptions } from '../data/api';
 import { jsonResponseFrom, getParameterByName } from '../utils';
 
 const version = { number: config.cache.version };
@@ -176,42 +176,89 @@ function handleCacheMatch(request, response) {
 
 function handlePostReview(event) {
 
+	const asLocalReview = (review, now) => {
+		review.id = -now;
+		review.createdAt = now;
+		review.updatedAt = now;
+		return review;
+	};
+
+	const now = Date.now();
+
 	// Cache the review
 	event.request.clone().json().
-		then(review => {
-			console.log('CACHING POSTED REVIEW: ');
-			const now = Date.now();
-			review.id = -now;
-			review.createdAt = now;
-			review.updatedAt = now;
-			console.log(review);
-			return review;
-		}).
-		then(db.cacheReviews);
+		then(review => asLocalReview(review, now)).
+		then(db.cacheReviews).
+		catch(console.error);
 
-	console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
+	// console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
+
+	const request = event.request.clone();
 
 	return fetch(event.request).
 		then(response => {
-
-			if (!response || response.status !== 201) {
-				console.warn('Failed to POST review');
-				// TODO: queue post in local storage
-				// TODO: what do we return? 201?
-				return response;
-			}
-
+			if (!response || response.status !== 201)
+				throw new Error(response || 'No response from server');
 			console.info('POSTed review to server on first try');
 			return response;
 		}).
 		catch(error => {
 			console.warn('Failed to POST review');
 			console.error(error);
-			// TODO: queue post in local storage
-			// TODO: what do we return? 201?
-			throw error;
-		});
+			
+			return request.json().
+				then(body => asLocalReview(body, now)).
+				then(review => db.
+					queueOp({
+						ts: Date.now(),
+							op: 'addReview',
+							args: JSON.stringify([review])
+					}).
+					then(() => new Response(JSON.stringify(review), {
+						"status": 202,
+						"statusText": "ACCEPTED"}))
+				);
+		}).
+		catch(console.error);
 }
+
+const Ops = {
+	addReview: (review) => 
+		fetch(api.addReview(), writeOptions('POST', {
+			restaurant_id: review.restaurant_id,
+			name: review.name,
+			rating: review.rating,
+			comments: review.comments })).
+		then(response => {
+			if (!response || ![201, 202].includes(response.status))
+				throw Error(response);
+			return response.json();
+		})
+}
+
+const sortByTimestampDescending = (ops) => 
+	ops.sort((x,y) => y.ts - x.ts);
+
+const parseOps = (ops) => 
+	ops.map(entry => ({
+		...entry,
+		args: JSON.parse(entry.args)
+	}));
+
+const sendEverythingInTheOutbox = () => {
+	return db.
+		getQueuedOps().
+		then(sortByTimestampDescending).
+		then(parseOps).
+		then(ops => Promise.all(
+			ops.map(entry => {
+				console.log(`${entry.op}(${entry.args[0]})`);
+				return Ops[entry.op](...entry.args);
+			})
+		)).
+		then(console.log('DONE syncing outbox')).
+		catch(console.error);
+};
 
 // SERVICE WORKER CALLBACKS
 
@@ -270,4 +317,12 @@ self.addEventListener('fetch', (event) => {
 				then(response => handleCacheMatch(event.request, response)).
 				catch(console.error)
 	);
+});
+
+self.addEventListener('sync', (event) => {
+	if (event.tag == 'outbox') {
+		console.log('SYNCing outbox...');
+	  	return event.waitUntil(
+		  sendEverythingInTheOutbox());
+	}
 });

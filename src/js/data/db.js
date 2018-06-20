@@ -1,37 +1,6 @@
 import idb from 'idb';
 import config from '../config';
-
-// SOURCE: https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery
-const hash = (str = '') => {
-	let hash = 0;
-
-	if (str.length === 0)
-		return hash;
-
-	for (let i = 0; i < str.length; i++) {
-		const chr = str.charCodeAt(i);
-		hash = ((hash << 5) - hash) + chr;
-		hash |= 0; // Convert to 32bit integer
-	}
-
-	return hash;
-};
-
-const toArrayOrEmpty = (x) => 
-	Array.isArray(x) ? x : x ? [x] : [];
-
-const whereIsSomething = (xs) => 
-	xs.filter(x => !!x);
-
-const whereExistsIn = (lhs, rhs, predicate) => 
-	lhs.filter(x => 
-		rhs.find(y => predicate(x, y)));
-
-// SOURCE: http://colin-dumitru.github.io/functional-programming/javascript/tutorial/2014/12/28/functional_operations_in_es6.html
-const partition = (arr, predicate) =>
-	arr.reduce(
-		(l, r) => ( (predicate(r) ? l[0] : l[1]).push(r),  l ),
-		[[],[]] );
+import { hash, toArrayOrEmpty, partition, whereIsSomething, whereExistsIn } from './utils';
 
 const doDbUpgrade = (upgradeDb) => {
 	console.log(`Creating database: ${config.db.name} old version ${upgradeDb.oldVersion}`);
@@ -46,6 +15,11 @@ const doDbUpgrade = (upgradeDb) => {
 		}
 		case 1: {
 			const { name, options } = config.db.reviews;
+			console.log(`Creating object store: ${name} ${options}`);
+			upgradeDb.createObjectStore(name, options);
+		}
+		case 2: {
+			const { name, options } = config.db.queuedOps;
 			console.log(`Creating object store: ${name} ${options}`);
 			upgradeDb.createObjectStore(name, options);
 		}
@@ -132,6 +106,9 @@ const uncacheReviews = (reviews, keys) =>
 const keyForReview = (review) =>
 	IDBKeyRange.only([review.restaurant_id, review.id]);
 
+const getStaleReviews = (partitionedReviews) =>
+	whereExistsIn(...partitionedReviews, (x,y) => x.hashCode === y.hashCode)
+
 const reconcileCachedReviews = (reviews) =>
 	reviews.
 		getAll().
@@ -139,7 +116,7 @@ const reconcileCachedReviews = (reviews) =>
 		then(whereIsSomething).
 		then(hashReviewsContent).
 		then(partitionReviews).
-		then(partitionedReviews => whereExistsIn(...partitionedReviews, (x,y) => x.hashCode === y.hashCode)).
+		then(getStaleReviews).
 		then(staleReviews => staleReviews.map(keyForReview)).
 		then(keys => uncacheReviews(reviews, keys));
 
@@ -154,7 +131,24 @@ const cacheReviews = (json) =>
 			then(reviews.complete)).
 		catch(console.error);
 
-	
+
+// QUEUED OPS
+
+const getQueueOps = (db, mode = 'readonly') =>
+	getStore(db, config.db.queuedOps.name, mode);
+
+const queueOp = (op) =>
+	getDb().
+		then(db => getQueueOps(db, 'readwrite')).
+		then(ops => ops.put(op)).
+		catch(console.error);
+
+const getQueuedOps = () =>
+	getDb().
+		then(getQueueOps).
+		then(ops => ops.getAll()).
+		catch(console.error);
+		
 export default {
 	tryGetAllCachedRestaurants,
 	tryGetCachedRestaurant,
@@ -162,5 +156,8 @@ export default {
 
 	tryGetAllCachedReviewsFor,
 	// tryGetCachedReviews,
-	cacheReviews
+	cacheReviews,
+
+	queueOp,
+	getQueuedOps
 };

@@ -1,16 +1,9 @@
-import config from '../config';
-import api from './api';
+import api, { writeOptions } from './api';
 
 function distinct(arr, key) {
 	const keys = arr.map((v, i) => arr[i][key]);
 	return keys.filter((v, i) => keys.indexOf(v) === i);
 }
-
-const writeOptions = (method, data) => ({ 
-	method: method, 
-	body: JSON.stringify(data),
-	headers: { 'content-type': 'application/json' } }
-);
 
 /**
  * Common database helper functions.
@@ -32,7 +25,7 @@ export default class DBHelper {
 			rating: review.rating,
 			comments: review.comments })).
 		then(response => {
-			if (!response || response.status !== 201)
+			if (!response || ![201, 202].includes(response.status))
 				throw Error(response);
 			return response.json();
 		});
@@ -43,7 +36,7 @@ export default class DBHelper {
 			rating: review.rating,
 			comments: review.comments })).
 		then(response => {
-				if (!response || response.status !== 200)
+				if (!response || ![200, 201, 204].includes(response.status))
 					throw Error(response);
 				return response.json();
 			});
@@ -51,7 +44,7 @@ export default class DBHelper {
 	static deleteReview = (id) => 
 		fetch(api.updateReview(id), { method: 'DELETE' }).
 			then(response => {
-				if (!response || response.status !== 200)
+				if (!response || ![200, 202, 204].includes(response.status))
 					throw Error(response);
 				return response.json();
 			});
@@ -59,7 +52,7 @@ export default class DBHelper {
 	static setIsFavoriteRestaurant = (id, isFavorite) => 
 		fetch(api.favorite(id, isFavorite), { method: 'PUT' }).
 			then(response => {
-				if (!response || response.status !== 200)
+				if (!response || ![200, 201, 204].includes(response.status))
 					throw Error(response);
 				return response.json();
 			});

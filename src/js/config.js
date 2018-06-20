@@ -18,7 +18,7 @@ const Config = {
         ]
     },
     db: {
-        version: 2,
+        version: 3,
         name: 'restaurant-reviews',
         restaurants: {
             name: 'restaurants',
@@ -27,7 +27,11 @@ const Config = {
         reviews: {
             name: 'reviews',
             options: { keyPath: ['restaurant_id', 'id'] }
-        }
+        },
+        queuedOps: {
+            name: 'queuedOps',
+            options: { keyPath: 'ts' }
+        },
     },
     maps: {
         key: 'GOOGLE_MAPS_API_KEY',

@@ -1,5 +1,11 @@
 import config from '../config';
 
+export const writeOptions = (method, data) => ({ 
+	method: method, 
+	body: JSON.stringify(data),
+	headers: { 'content-type': 'application/json' } }
+);
+
 class RestaurantsApi {
 	static get base() {
 		return `http://${config.server.host}:${config.server.port}`;
