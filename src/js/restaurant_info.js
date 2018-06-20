@@ -16,7 +16,6 @@ export default class RestaurantInfo {
 		this.window = window;
 		this.document = document;
 		this.reviewFormVm = null;
-		this.nextId = 0;
 
 		this.map = new StaticMap(
 			this.document,
@@ -25,8 +24,6 @@ export default class RestaurantInfo {
 		this.initialize();
 	}
 
-	getNextId = () => --this.nextId;
-	
 	sortReviews = (reviews) =>
 		reviews.sort((x, y) => 
 			moment(y.updatedAt).valueOf() - moment(x.updatedAt).valueOf());
@@ -49,9 +46,8 @@ export default class RestaurantInfo {
 				this.reviewFormVm.getFormData();
 
 			const review = {
-				id: this.getNextId(),
 				restaurant_id: this.restaurant.id,
-				name, rating: rating || 42, comments
+				name, rating: rating || 42, comments // TODO: remove rating hack
 			};
 			
 			this.restaurant.reviews.unshift(review);
@@ -61,16 +57,8 @@ export default class RestaurantInfo {
 				this.document.getElementById('reviews-container'),
 				this.restaurant.reviews);
 
-			db.cacheReviews(this.restaurant.reviews);
-
 			DBHelper.addReview(review);
-
-			// TODO: deal with offline or 400/500 submit
 		};
-
-		// this.reviewFormVm.postFormSubmit = () => {
-
-		// };
 	};
 
 	initialize = () => {

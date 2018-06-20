@@ -174,6 +174,47 @@ function handleCacheMatch(request, response) {
 		});
 }
 
+function handlePostReview(event) {
+
+	// Cache the review
+	event.request.clone().json().
+		then(review => {
+			console.log('CACHING POSTED REVIEW: ');
+			const now = Date.now();
+			review.id = -now;
+			review.createdAt = now;
+			review.updatedAt = now;
+			console.log(review);
+			return review;
+		}).
+		then(db.cacheReviews);
+
+	console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
+
+	return fetch(event.request).
+		then(response => {
+
+			if (!response || response.status !== 201) {
+				console.warn('Failed to POST review');
+				// TODO: queue post in local storage
+				// TODO: what do we return? 201?
+				return response;
+			}
+
+			console.info('POSTed review to server on first try');
+			return response;
+		}).
+		catch(error => {
+			console.warn('Failed to POST review');
+			console.error(error);
+			// TODO: queue post in local storage
+			// TODO: what do we return? 201?
+			throw error;
+		});
+}
+
+// SERVICE WORKER CALLBACKS
+
 self.addEventListener('install', (event) => {
 	//console.log(`INSTALL [${version.number}]`);
 
@@ -202,7 +243,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-	//console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
+	console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
 
 	const isRestrauntData =
 		event.request.method === 'GET' &&
@@ -212,17 +253,21 @@ self.addEventListener('fetch', (event) => {
 		event.request.method === 'GET' &&
 		event.request.url.includes('/reviews');
 
+	const isReviewPost =
+		event.request.method === 'POST' &&
+		event.request.url.includes('/reviews');
+
 	const isPassthrough =
-		event.request.method === 'POST' ||
 		event.request.url.includes('sockjs-node') ||
 		event.request.url.includes('browser-sync');
 
 	event.respondWith(
 		isRestrauntData ? getRestaurantData(event) :
 		isReviewData ? getReviewData(event) :
-			isPassthrough ? fetch(event.request) :
-				caches.match(event.request, { ignoreSearch: true }).
-					then(response => handleCacheMatch(event.request, response)).
-					catch(console.error)
+		isReviewPost ? handlePostReview(event) :
+		isPassthrough ? fetch(event.request) :
+			caches.match(event.request, { ignoreSearch: true }).
+				then(response => handleCacheMatch(event.request, response)).
+				catch(console.error)
 	);
 });
