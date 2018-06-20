@@ -4,7 +4,7 @@ const Config = {
         port: 1337
     },
     cache: {
-        version: '1.1.0',
+        version: '3.0.0',
         name: 'restaurant-reviews',
         urls: [
             '/',
@@ -18,11 +18,15 @@ const Config = {
         ]
     },
     db: {
-        version: 1,
+        version: 2,
         name: 'restaurant-reviews',
         restaurants: {
             name: 'restaurants',
-            key: 'id'
+            options: { keyPath: 'id' }
+        },
+        reviews: {
+            name: 'reviews',
+            options: { keyPath: ['restaurant_id', 'id'] }
         }
     },
     maps: {
