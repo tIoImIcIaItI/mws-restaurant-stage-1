@@ -47,7 +47,7 @@ export default class RestaurantInfo {
 
 			const review = {
 				restaurant_id: this.restaurant.id,
-				name, rating: rating || 42, comments // TODO: remove rating hack
+				name, rating, comments
 			};
 			
 			this.restaurant.reviews.unshift(review);
