@@ -3,7 +3,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
 import config from '../config';
-import db from '../data/db';
+import { Restaurants, Reviews, QueuedOps } from '../data/db';
 import api, { writeOptions } from '../data/api';
 import { jsonResponseFrom, getParameterByName } from '../utils';
 
@@ -30,7 +30,7 @@ function updateCacheFor(request) {
 				return response;
 
 			return response.json().
-				then(db.cacheRestaurant);
+				then(Restaurants.putMany);
 		});
 }
 
@@ -42,7 +42,7 @@ function getAndCacheRestraunt(event) {
 				return response;
 
 			response.clone().json().
-				then(db.cacheRestaurant);
+				then(Restaurants.putMany);
 
 			return response;
 		});
@@ -53,8 +53,8 @@ function tryGetFromCache(url) {
 	const id = idFrom(url);
 
 	return id ?
-		db.tryGetCachedRestaurant(id) :
-		db.tryGetAllCachedRestaurants();
+		Restaurants.get(id) :
+		Restaurants.getAll();
 }
 
 function getRestaurantData(event) {
@@ -100,7 +100,7 @@ function updateCacheForReviews(request) {
 				return response;
 
 			return response.json().
-				then(db.cacheReviews);
+				then(Reviews.putMany);
 		});
 }
 
@@ -112,7 +112,7 @@ function getAndCacheReviews(event) {
 				return response;
 
 			response.clone().json().
-				then(db.cacheReviews);
+				then(Reviews.putMany);
 
 			return response;
 		})
@@ -124,8 +124,8 @@ function tryGetReviewFromCache(url) {
 	// const id = reviewIdFrom(url);
 
 	// return //id ?
-		//db.tryGetCachedReview(id) :
-		return db.tryGetAllCachedReviewsFor(restaurantId);
+		//Reviews.tryGetCachedReview(id) :
+		return Reviews.getAllForRestaurant(restaurantId);
 }
 
 function getReviewData(event) {
@@ -188,7 +188,7 @@ function handlePostReview(event) {
 	// Cache the review
 	event.request.clone().json().
 		then(review => asLocalReview(review, now)).
-		then(db.cacheReviews).
+		then(Reviews.putMany).
 		catch(console.error);
 
 	// console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
@@ -199,20 +199,19 @@ function handlePostReview(event) {
 		then(response => {
 			if (!response || response.status !== 201)
 				throw new Error(response || 'No response from server');
-			console.info('POSTed review to server on first try');
 			return response;
 		}).
 		catch(error => {
-			console.warn('Failed to POST review');
-			console.error(error);
+			// console.warn('Failed to POST review');
+			// console.error(error);
 			
 			return request.json().
 				then(body => asLocalReview(body, now)).
-				then(review => db.
-					queueOp({
+				then(review => QueuedOps.
+					insert({
 						ts: Date.now(),
-							op: 'addReview',
-							args: JSON.stringify([review])
+						op: 'addReview',
+						args: JSON.stringify([review])
 					}).
 					then(() => new Response(JSON.stringify(review), {
 						"status": 202,
@@ -245,20 +244,18 @@ const parseOps = (ops) =>
 		args: JSON.parse(entry.args)
 	}));
 
-const sendEverythingInTheOutbox = () => {
-	return db.
-		getQueuedOps().
+const sendEverythingInTheOutbox = () =>
+	QueuedOps.
+		getAll().
 		then(sortByTimestampDescending).
 		then(parseOps).
 		then(ops => Promise.all(
-			ops.map(entry => {
-				console.log(`${entry.op}(${entry.args[0]})`);
-				return Ops[entry.op](...entry.args);
-			})
+			ops.map(entry => 
+				Ops[entry.op](...entry.args).
+					then(() => QueuedOps.delete(entry.ts)).
+					catch(console.error))
 		)).
-		then(console.log('DONE syncing outbox')).
 		catch(console.error);
-};
 
 // SERVICE WORKER CALLBACKS
 
@@ -290,7 +287,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-	console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
+	// console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
 
 	const isRestrauntData =
 		event.request.method === 'GET' &&
@@ -321,7 +318,6 @@ self.addEventListener('fetch', (event) => {
 
 self.addEventListener('sync', (event) => {
 	if (event.tag == 'outbox') {
-		console.log('SYNCing outbox...');
 	  	return event.waitUntil(
 		  sendEverythingInTheOutbox());
 	}

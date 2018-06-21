@@ -10,16 +10,16 @@ export const loadScript = (document, src, async, integrity, crossorigin) => {
 	parent.appendChild(child);
 };
 
-export const jsonResponseFrom = (obj) => {
-	return new Response(
+export const jsonResponseFrom = (obj) =>
+	new Response(
 		new Blob([JSON.stringify(obj)], {
 			type: 'application/json'
 		}), {
 			"status": 200,
 			"statusText": "ok"
 		});
-};
 
+// SOURCE: https://stackoverflow.com/questions/9457891/how-to-detect-if-domcontentloaded-was-fired
 export const waitForDOMContentLoaded = (document) => {
 	return new Promise(resolve => {
 		if (/comp|inter|loaded/.test(document.readyState))

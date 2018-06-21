@@ -7,7 +7,6 @@ const doDbUpgrade = (upgradeDb) => {
 	// Note: we don't use 'break' in this switch statement,
 	// the fall-through behaviour is what we want.
 	switch (upgradeDb.oldVersion) {
-
 		case 0: {
 			const { name, options } = config.db.restaurants;
 			console.log(`Creating object store: ${name} ${options}`);
@@ -39,42 +38,46 @@ const putAll = (store, records) =>
 
 // RESTAURANTS
 
-const getRestaurants = (db, mode = 'readonly') =>
+const getRestaurantsStore = (db, mode = 'readonly') =>
 	getStore(db, config.db.restaurants.name, mode);
 
-const tryGetAllCachedRestaurants = () =>
-	getDb().
-		then(getRestaurants).
-		then(restaurants => restaurants.getAll()).
-		catch(console.error);
+const getRestaurants = (mode = 'readonly') =>
+	getDb().then(db => getRestaurantsStore(db, mode));
 
-const tryGetCachedRestaurant = (id) =>
-	getDb().
-		then(getRestaurants).
-		then(restaurants => restaurants.get(id)).
-		catch(console.error);
+export const Restaurants = {
 
-const cacheRestaurant = (json) =>
-	getDb().
-		then(db => getRestaurants(db, 'readwrite')).
-		then(restaurants => 
-			putAll(restaurants, json).
-			then(restaurants.complete)).
-		catch(console.error);
+	getAll: () =>
+		getRestaurants().
+			then(restaurants => restaurants.getAll()).
+			catch(console.error),
 
+	get: (id) =>
+		getRestaurants().
+			then(restaurants => restaurants.get(id)).
+			catch(console.error),
+
+	putMany: (json) =>
+		getRestaurants('readwrite').
+			then(restaurants => 
+				putAll(restaurants, json).
+				then(restaurants.complete)).
+			catch(console.error)
+};
 
 // REVIEWS
 
-const getReviews = (db, mode = 'readonly') =>
+const getReviewsStore = (db, mode = 'readonly') =>
 	getStore(db, config.db.reviews.name, mode);
 
+const getReviews = (mode = 'readonly') =>
+	getDb().then(db => getReviewsStore(db, mode));
+
+const getReviewsForWrite = () =>
+	getReviews('readwrite');
+
 // https://stackoverflow.com/questions/26203075/querying-an-indexeddb-compound-index-with-a-shorter-array
-const tryGetAllCachedReviewsFor = (restaurantId) =>
-	getDb().
-		then(getReviews).
-		then(reviews => reviews.
-			getAll( IDBKeyRange.bound([restaurantId], [restaurantId, []]) )).
-		catch(console.error);
+const reviewKeyForRestaurant = (restaurantId) => 
+	IDBKeyRange.bound([restaurantId], [restaurantId, []]);
 
 // const tryGetCachedReviews = (restaurantId) =>
 // 	getDb().
@@ -96,12 +99,7 @@ const partitionReviews = (reviews) =>
 	partition(reviews, r => r.id < 0);
 
 const uncacheReviews = (reviews, keys) =>
-	Promise.all(
-		keys.map(key => {
-			console.info(`DELETING from cache: review ${key}`);
-			return reviews.delete(key);
-		})
-	);
+	Promise.all(keys.map(reviews.delete));
 
 const keyForReview = (review) =>
 	IDBKeyRange.only([review.restaurant_id, review.id]);
@@ -120,44 +118,47 @@ const reconcileCachedReviews = (reviews) =>
 		then(staleReviews => staleReviews.map(keyForReview)).
 		then(keys => uncacheReviews(reviews, keys));
 
-const cacheReviews = (json) =>
-	getDb().
-		then(db => getReviews(db, 'readwrite')).
-		then(reviews => 
-			putAll(reviews, json).
-			then(() => console.info('reconcileCachedReviews()...')).
-			then(() => reconcileCachedReviews(reviews)).
-			then(() => console.info('...done')).
-			then(reviews.complete)).
-		catch(console.error);
+export const Reviews = {
 
+	getAllForRestaurant: (restaurantId) =>
+		getReviews().
+			then(reviews => reviews.getAll(reviewKeyForRestaurant(restaurantId))).
+			catch(console.error),
+	
+	putMany: (json) =>
+		getReviewsForWrite().
+			then(reviews => 
+				putAll(reviews, json).
+				then(() => reconcileCachedReviews(reviews)).
+				then(reviews.complete)).
+			catch(console.error)
+};
 
 // QUEUED OPS
 
-const getQueueOps = (db, mode = 'readonly') =>
+const getQueuedOpsStore = (db, mode = 'readonly') =>
 	getStore(db, config.db.queuedOps.name, mode);
 
-const queueOp = (op) =>
-	getDb().
-		then(db => getQueueOps(db, 'readwrite')).
-		then(ops => ops.put(op)).
-		catch(console.error);
+const getQueuedOpsForRead = (mode = 'readonly') =>
+	getDb().then(db => getQueuedOpsStore(db, mode));
 
-const getQueuedOps = () =>
-	getDb().
-		then(getQueueOps).
-		then(ops => ops.getAll()).
-		catch(console.error);
-		
-export default {
-	tryGetAllCachedRestaurants,
-	tryGetCachedRestaurant,
-	cacheRestaurant,
+const getQueuedOpsForWrite = () => 
+	getQueuedOps('readwrite');
 
-	tryGetAllCachedReviewsFor,
-	// tryGetCachedReviews,
-	cacheReviews,
+export const QueuedOps = {
+	
+	insert: (op) =>
+		getQueuedOpsForWrite().
+			then(ops => ops.put(op)).
+			catch(console.error),
 
-	queueOp,
-	getQueuedOps
+	getAll: () =>
+		getQueuedOpsForRead().
+			then(ops => ops.getAll()).
+			catch(console.error),
+
+	delete: (key) =>
+		getQueuedOpsForWrite().
+			then(ops => ops.delete(key)).
+			catch(console.error)
 };

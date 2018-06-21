@@ -1,7 +1,7 @@
 import 'intersection-observer'; // polyfill IntersectionObserver
 import { waitForDOMContentLoaded } from './utils/index';
 import DBHelper from './data/dbhelper';
-import db from './data/db';
+import { Restaurants } from './data/db';
 import Observer from './utils/observer';
 import Map from './components/map';
 import { isTrue } from './utils';
@@ -207,7 +207,7 @@ export default class Main {
 	setIsFavoriteRestaurant = (id, val) =>
 		DBHelper.
 			setIsFavoriteRestaurant(id, val).
-			then(db.cacheRestaurant);
+			then(Restaurants.putMany);
 
 	/**
 	 * Create all restaurants HTML and add them to the webpage.
