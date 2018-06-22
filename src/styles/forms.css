@@ -44,19 +44,15 @@ fieldset:not(.has-error) fieldset:not(.has-success) .form-control:focus{
     border-bottom-color: #2D7EBC;
 }
 
-fieldset.has-error textarea {
+fieldset.has-error textarea,
+fieldset.has-error input,
+fieldset.has-success select {
     border-bottom-color: #dc3545;
 }
 
-fieldset.has-error input {
-    border-bottom-color: #dc3545;
-}
-
-fieldset.has-success textarea {
-    border-bottom-color: #28a745;
-}
-
-fieldset.has-success input {
+fieldset.has-success textarea,
+fieldset.has-success input,
+fieldset.has-success select {
     border-bottom-color: #28a745;
 }
 

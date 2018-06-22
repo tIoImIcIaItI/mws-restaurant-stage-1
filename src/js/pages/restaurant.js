@@ -7,4 +7,4 @@ import registerServiceWorker from '../serviceworker/serviceworker';
 
 const info = new RestaurantInfo(window, document);
 
-// registerServiceWorker(navigator, window);
+registerServiceWorker(navigator, window);

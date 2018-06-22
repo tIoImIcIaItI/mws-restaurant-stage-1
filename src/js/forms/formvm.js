@@ -19,12 +19,13 @@ export default class FormViewModel {
     };
 
     // Return an array filled with all the likely DOM input elements in this form
-    allInputs = () => {
-        return Array.from(this.el.getElementsByTagName('input')).concat(
-            Array.from(this.el.getElementsByTagName('textarea')));
-    };
+    allInputs = () =>
+        Array.from(this.el.getElementsByTagName('input')).concat(
+            Array.from(this.el.getElementsByTagName('textarea'))).concat(
+                Array.from(this.el.getElementsByTagName('select')));
 
-    clearInput = (input) => input.value = '';
+    clearInput = (input) => 
+        input.value = '';
 
     // Removes any value and validation errors from the given DOM input element
     resetInput = (input) => {
@@ -73,7 +74,6 @@ export default class FormViewModel {
     
     setValidationSuccessState = (input) => {
         this.errorElementsFor(input).forEach(error => {
-            //error.removeAttribute('aria-live');
             error.setAttribute('aria-hidden', 'true');
             error.textContent = '';
             error.classList.add('invisible');
@@ -94,7 +94,6 @@ export default class FormViewModel {
     clearValidationErrorState = (input) => {
 
         this.errorElementsFor(input).forEach(error => {
-            //error.removeAttribute('aria-live');
             error.setAttribute('aria-hidden', 'true');
             error.textContent = '';
             error.classList.add('invisible');
@@ -110,11 +109,10 @@ export default class FormViewModel {
     };
 
     // Wrapper function for setCustomValidity() with fallback
-    setValidity = (input, msg) => {
+    setValidity = (input, msg) =>
         input.setCustomValidity !== undefined ?
             input.setCustomValidity(msg) :
             input.setAttribute('data-validity-customValidity', msg);
-    };
 
     // Wrapper function for validity.valid property with fallback
     isValid = (input) => 

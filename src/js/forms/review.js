@@ -1,4 +1,5 @@
 import FormViewModel from "./formvm";
+import { setBoolAttr, keyValuesToObject } from './utils';
 
 export default class ReviewForm extends FormViewModel {
 
@@ -8,56 +9,68 @@ export default class ReviewForm extends FormViewModel {
         this.document = document;
 
         this.submit = document.getElementById('new-review-btn-submit');
+
         this.name = document.getElementById('new-review-name');
         this.rating = document.getElementById('new-review-rating');
         this.comments = document.getElementById('new-review-comments');
 
-        this.name.addEventListener('blur', () => this.validateName());
-        this.rating.addEventListener('blur', () => this.validateRating());
-        this.comments.addEventListener('blur', () => this.validateComments());
+        this.fields = {
+            name: {
+                element: this.name,
+                isValid: (e) => e.value.length > 0,
+                errorMsg: 'Please provide your name'
+            },
+            rating: {
+                element: this.rating,
+                isValid: (e) => e.value >= 1 && e.value <= 5,
+                errorMsg: 'Please select a rating from 1 to 5'
+            },
+            comments: {
+                element: this.comments,
+                isValid: (e) => e.value.length > 0,
+                errorMsg: 'Please provide some comments about your experience'
+            },
+        };
 
-        this.name.addEventListener('input', () => this.validateName());
-        this.rating.addEventListener('input', () => this.validateRating());
-        this.comments.addEventListener('input', () => this.validateComments());
+        Object.entries(this.fields).forEach(entry => {
+            const field = entry[0];
+            const element = entry[1].element;
+            element.addEventListener('blur', () => this.updateValidity([field]));
+            element.addEventListener('input', () => this.updateValidity([field]));
+        });
     }
 
-    validateName = () => {
-        return this.name.value.length > 0 ? 
-            this.passInput(this.name) : 
-            this.failInput(this.name, 'Please provide your name');
-    };
-
-    validateRating = () => {
-        return (this.rating.value >= 1 && this.rating.value <= 5) ? 
-            this.passInput(this.rating) : 
-            this.failInput(this.rating, 'Please select a rating from 1 to 5');
-    };
-
-    validateComments = () => {
-        return this.comments.value.length > 0 ? 
-            this.passInput(this.comments) : 
-            this.failInput(this.comments, 'Please provide some comments about your experience');
-    };
-
-    updateValidity = () => {
-        let res = true;
-        res &= this.validateName();
-        res &= this.validateRating();
-        res &= this.validateComments();
-
-        if (res)
-            this.submit.removeAttribute('disabled');
+    updateFieldValidity = (entry, isValid) => {
+        if (isValid)
+            this.passInput(entry.element)
         else
-            this.submit.setAttribute('disabled', '');
-
-        return res;
+            this.failInput(entry.element, entry.errorMsg);
     };
 
-    getFormData = () => {
-        return {
-            name: this.name.value,
-            rating: this.rating.value,
-            comments: this.comments.value
-        };
+    // Validate the entire form
+    // Update the validation state of the requested fields only
+    updateValidity = (fields) => {
+        
+        const isValid = Object.entries(this.fields).reduce(
+            (p,c) => { 
+                const [ field, entry ] = c;
+                const isValid = entry.isValid(entry.element);
+
+                if (fields && fields.includes(field))
+                    this.updateFieldValidity(entry, isValid);
+
+                return p && entry.isValid(entry.element);
+            }, true);
+
+        setBoolAttr(this.submit, 'disabled', isValid);
+
+        return isValid;
     };
+
+    // Returns an object with key/value pairs of the fields, ex:
+    // { email: 'a@b.com', name: 'John Hancock' }
+    getFormData = () =>
+        keyValuesToObject(
+            Object.entries(this.fields).
+                map(e => [ e[0], e[1].element.value ] ));
 }
