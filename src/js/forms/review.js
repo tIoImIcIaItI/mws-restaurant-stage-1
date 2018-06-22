@@ -17,17 +17,20 @@ export default class ReviewForm extends FormViewModel {
         this.fields = {
             name: {
                 element: this.name,
-                isValid: (e) => e.value.length > 0,
+                getValue: (e) => e.value,
+                isValid: (v) => v.length > 0,
                 errorMsg: 'Please provide your name'
             },
             rating: {
                 element: this.rating,
-                isValid: (e) => e.value >= 1 && e.value <= 5,
+                getValue: (e) => Number.parseInt(e.value, 10),
+                isValid: (v) => v >= 1 && v <= 5,
                 errorMsg: 'Please select a rating from 1 to 5'
             },
             comments: {
                 element: this.comments,
-                isValid: (e) => e.value.length > 0,
+                getValue: (e) => e.value,
+                isValid: (v) => v.length > 0,
                 errorMsg: 'Please provide some comments about your experience'
             },
         };
@@ -54,13 +57,15 @@ export default class ReviewForm extends FormViewModel {
         const isValid = Object.entries(this.fields).reduce(
             (p,c) => { 
                 const [ field, entry ] = c;
-                const isValid = entry.isValid(entry.element);
+                const value = entry.getValue(entry.element);
+                const isValid = entry.isValid(value);
 
                 if (fields && fields.includes(field))
                     this.updateFieldValidity(entry, isValid);
 
-                return p && entry.isValid(entry.element);
-            }, true);
+                return p && isValid;
+            }, 
+            true);
 
         setBoolAttr(this.submit, 'disabled', isValid);
 
@@ -72,5 +77,5 @@ export default class ReviewForm extends FormViewModel {
     getFormData = () =>
         keyValuesToObject(
             Object.entries(this.fields).
-                map(e => [ e[0], e[1].element.value ] ));
+                map(e => [ e[0], e[1].getValue(e[1].element) ] ));
 }

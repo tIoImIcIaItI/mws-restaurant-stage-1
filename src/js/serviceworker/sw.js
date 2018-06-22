@@ -197,8 +197,12 @@ function handlePostReview(event) {
 
 	return fetch(event.request).
 		then(response => {
-			if (!response || response.status !== 201)
-				throw new Error(response || 'No response from server');
+			debugger
+			// If we got a 201, that means we POSTed the review so pass the successful response on.
+			// If we got a 400 response, pass it on as this is a client/data error that is unlikely to be transient.
+			// For any other failure to POST, queue up a retry.
+			if (!response || (response.status !== 201 && (response.status < 400 || response.status >= 500)))
+				throw new Error(response ? response.status.status : 'No response from server');
 			return response;
 		}).
 		catch(error => {
@@ -213,6 +217,7 @@ function handlePostReview(event) {
 						op: 'addReview',
 						args: JSON.stringify([review])
 					}).
+					then(() => registerForSync()).
 					then(() => new Response(JSON.stringify(review), {
 						"status": 202,
 						"statusText": "ACCEPTED"}))
@@ -256,6 +261,14 @@ const sendEverythingInTheOutbox = () =>
 					catch(console.error))
 		)).
 		catch(console.error);
+
+const registerForSync = (reg = self.registration) => {
+	console.log('registerForSync reg');
+	console.log(reg);
+	return reg.sync.
+		register('outbox').
+		catch(console.error);
+};
 
 // SERVICE WORKER CALLBACKS
 

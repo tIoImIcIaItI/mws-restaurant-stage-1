@@ -139,7 +139,7 @@ export const Reviews = {
 const getQueuedOpsStore = (db, mode = 'readonly') =>
 	getStore(db, config.db.queuedOps.name, mode);
 
-const getQueuedOpsForRead = (mode = 'readonly') =>
+const getQueuedOps = (mode = 'readonly') =>
 	getDb().then(db => getQueuedOpsStore(db, mode));
 
 const getQueuedOpsForWrite = () => 
@@ -153,7 +153,7 @@ export const QueuedOps = {
 			catch(console.error),
 
 	getAll: () =>
-		getQueuedOpsForRead().
+		getQueuedOps().
 			then(ops => ops.getAll()).
 			catch(console.error),
 
