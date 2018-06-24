@@ -24,7 +24,7 @@ export const whereExistsIn = (lhs, rhs, predicate) =>
 	lhs.filter(x =>
 		rhs.find(y => predicate(x, y)));
 
-		// SOURCE: http://colin-dumitru.github.io/functional-programming/javascript/tutorial/2014/12/28/functional_operations_in_es6.html
+// SOURCE: http://colin-dumitru.github.io/functional-programming/javascript/tutorial/2014/12/28/functional_operations_in_es6.html
 export const partition = (arr, predicate) =>
 	arr.reduce(
 		(l, r) => ( (predicate(r) ? l[0] : l[1]).push(r),  l ),

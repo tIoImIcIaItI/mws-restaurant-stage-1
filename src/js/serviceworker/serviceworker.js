@@ -27,10 +27,8 @@ const registerServiceWorker = (navigator, window) => {
 			});
 		
 		navigator.serviceWorker.ready.
-			then(reg => 
-				reg.sync.
-					register('outbox').
-					catch(console.error));
+			then(reg => reg.sync.register('queued-ops')).
+			catch(console.error);
 
 	});
 };

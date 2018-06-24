@@ -3,7 +3,9 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
 import config from '../config';
-import { Restaurants, Reviews, QueuedOps } from '../data/db';
+import Restaurants from '../data/restaurants';
+import Reviews from '../data/reviews';
+import QueuedOps from '../data/queued-ops';
 import api, { writeOptions } from '../data/api';
 import { jsonResponseFrom, getParameterByName } from '../utils';
 
@@ -197,7 +199,6 @@ function handlePostReview(event) {
 
 	return fetch(event.request).
 		then(response => {
-			debugger
 			// If we got a 201, that means we POSTed the review so pass the successful response on.
 			// If we got a 400 response, pass it on as this is a client/data error that is unlikely to be transient.
 			// For any other failure to POST, queue up a retry.
@@ -249,7 +250,7 @@ const parseOps = (ops) =>
 		args: JSON.parse(entry.args)
 	}));
 
-const sendEverythingInTheOutbox = () =>
+const processQueuedOps = () =>
 	QueuedOps.
 		getAll().
 		then(sortByTimestampDescending).
@@ -257,18 +258,15 @@ const sendEverythingInTheOutbox = () =>
 		then(ops => Promise.all(
 			ops.map(entry => 
 				Ops[entry.op](...entry.args).
-					then(() => QueuedOps.delete(entry.ts)).
-					catch(console.error))
+					then(() => QueuedOps.delete(entry.ts)))
 		)).
 		catch(console.error);
 
-const registerForSync = (reg = self.registration) => {
-	console.log('registerForSync reg');
-	console.log(reg);
-	return reg.sync.
-		register('outbox').
+const registerForSync = (reg = self.registration) =>
+	reg.sync.
+		register('queued-ops').
 		catch(console.error);
-};
+
 
 // SERVICE WORKER CALLBACKS
 
@@ -330,8 +328,8 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('sync', (event) => {
-	if (event.tag == 'outbox') {
+	if (event.tag == 'queued-ops') {
 	  	return event.waitUntil(
-		  sendEverythingInTheOutbox());
+		  processQueuedOps());
 	}
 });
