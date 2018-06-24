@@ -71,7 +71,8 @@ const Reviews = {
 	putMany: (json) => 
 		getReviewsForWrite().
 			then(reviews => putAll(reviews, json)).
-			then(() => reconcileCachedReviews())
+			then(() => reconcileCachedReviews()).
+			catch(console.error)
 };
 
 export default Reviews;
