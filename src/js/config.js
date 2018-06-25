@@ -33,6 +33,9 @@ const Config = {
             options: { keyPath: 'ts' }
         },
     },
+    opsQueue: {
+        tag: 'queued-ops'
+    },
     maps: {
         key: 'GOOGLE_MAPS_API_KEY',
         static: {

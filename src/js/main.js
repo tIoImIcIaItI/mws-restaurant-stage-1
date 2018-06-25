@@ -1,8 +1,8 @@
 import 'intersection-observer'; // polyfill IntersectionObserver
 import { waitForDOMContentLoaded } from './utils/index';
 import DBHelper from './data/dbhelper';
-import { Restaurants } from './data/db';
 import Observer from './utils/observer';
+import NetworkMonitor from './NetworkMonitor';
 import Map from './components/map';
 import { isTrue } from './utils';
 import renderCopyright from './components/copyright';
@@ -14,6 +14,7 @@ export default class Main {
 		this.window = window;
 		this.document = document;
 		this.mapInitialized = false;
+		this.monitor = new NetworkMonitor(this.window);
 
 		this.initialize();
 	}
@@ -68,31 +69,34 @@ export default class Main {
 
 		// Load initial data
 		this.fetchInitialData().
-		then(data => {
-			this.neighborhoods = data.neighborhoods;
-			this.cuisines = data.cuisines;
-			this.restaurants = data.restaurants;
-		}).
-		then(() => waitForDOMContentLoaded(this.document)).
-		then(() => {
-			this.fillNeighborhoodsHTML();
-			this.fillCuisinesHTML();
-			this.processRestaurants();
-		});
+			then(data => {
+				this.neighborhoods = data.neighborhoods;
+				this.cuisines = data.cuisines;
+				this.restaurants = data.restaurants;
+			}).
+			then(() => waitForDOMContentLoaded(this.document)).
+			then(() => {
+				this.fillNeighborhoodsHTML();
+				this.fillCuisinesHTML();
+				this.processRestaurants();
+			});
 
 		waitForDOMContentLoaded(this.document).
-		then(() => {
+			then(() => {
 
-			// Render the footer component
-			this.document.getElementById('footer').innerHTML =
-				renderCopyright();
+				// Render the footer component
+				this.document.getElementById('footer').innerHTML =
+					renderCopyright();
 
-			// Wire up and reset the map toggle
-			this.document.getElementById('show-map').addEventListener('change', event =>
-				this.onShowMapChanged(event.target.checked)
-			);
-			this.onShowMapChanged(false);
-		});
+				// Wire up and reset the map toggle
+				this.document.getElementById('show-map').addEventListener('change', event =>
+					this.onShowMapChanged(event.target.checked)
+				);
+				this.onShowMapChanged(false);
+
+				// Register for connectivity events
+				this.monitor.initialize();
+			});
 	}
 
 	onShowMapChanged = (showMap) => {
@@ -206,8 +210,7 @@ export default class Main {
 
 	setIsFavoriteRestaurant = (id, val) =>
 		DBHelper.
-			setIsFavoriteRestaurant(id, val);//.
-			// then(Restaurants.putMany);
+			setIsFavoriteRestaurant(id, val);
 
 	/**
 	 * Create all restaurants HTML and add them to the webpage.

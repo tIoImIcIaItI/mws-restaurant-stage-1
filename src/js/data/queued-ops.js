@@ -1,5 +1,5 @@
 import config from '../config';
-import { getDb, getStore, putAll } from './db';
+import { getDb, getStore } from './db';
 
 const getQueuedOpsStore = (db, mode = 'readonly') =>
 	getStore(db, config.db.queuedOps.name, mode);

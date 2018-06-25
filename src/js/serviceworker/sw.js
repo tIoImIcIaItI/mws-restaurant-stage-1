@@ -3,19 +3,22 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
 import config from '../config';
+import DBHelper from '../data/dbhelper';
+import OpsQueue from '../ops/ops-queue';
 import Restaurants from '../data/restaurants';
 import Reviews from '../data/reviews';
-import QueuedOps from '../data/queued-ops';
-import DBHelper from '../data/dbhelper';
 import api from '../data/api';
-import { jsonResponseFrom, getParameterByName } from '../utils';
+import { acceptedResponseFrom, jsonResponseFrom, getParameterByName } from '../utils';
 
 const version = { number: config.cache.version };
 const CACHE_NAME = `restaurant-reviews-${version.number}`;
 
+const registerForSync = (reg = self.registration) =>
+	reg.sync.register(config.opsQueue.tag)
+
 // RESTAURANTS
 
-const idFrom = (url) => {
+const restaurantIdFrom = (url) => {
 	const regex = /\/restaurants\/(\d+)/i;
 
 	const id = (url || '').match(regex);
@@ -53,7 +56,7 @@ function getAndCacheRestraunt(event) {
 
 function tryGetFromCache(url) {
 
-	const id = idFrom(url);
+	const id = restaurantIdFrom(url);
 
 	return id ?
 		Restaurants.get(id) :
@@ -148,7 +151,6 @@ function getReviewData(event) {
 		});
 }
 
-
 function handleCacheMatch(request, response) {
 
 	// Cache hit - return response
@@ -177,21 +179,22 @@ function handleCacheMatch(request, response) {
 		});
 }
 
-const parseIsFavorite = (url) => {
-	const regex = /is_favorite\=(true|false)$/i;
+const isFavoriteFrom = (url) => {
+	return getParameterByName('is_favorite', url);
+	// const regex = /is_favorite\=(true|false)$/i;
 
-	const val = (url || '').match(regex);
+	// const val = (url || '').match(regex);
 
-	return val && val.length >= 2 && val[1] ?
-		val[1] :
-		null;
+	// return val && val.length >= 2 && val[1] ?
+	// 	val[1] :
+	// 	null;
 };
 
 function putIsFavorite(event) {
 
 	const url = event.request.url;
-	const id = idFrom(url);
-	const isFavorite = parseIsFavorite(url);
+	const id = restaurantIdFrom(url);
+	const isFavorite = isFavoriteFrom(url);
 
 	// Update the local cache
 	Restaurants.favorite(id, isFavorite);
@@ -203,16 +206,10 @@ function putIsFavorite(event) {
 			return response;
 		}).
 		catch(error =>
-			QueuedOps.
-				insert({
-					ts: Date.now(),
-					op: 'favorite',
-					args: JSON.stringify([id, isFavorite])
-				}).
+			OpsQueue.
+				queueOp('favorite', [id, isFavorite]).
 				then(() => registerForSync()).
-				then(() => new Response(JSON.stringify(isFavorite), {
-					"status": 202,
-					"statusText": "ACCEPTED"}))
+				then(() => acceptedResponseFrom(isFavorite))
 		).
 		catch(console.error);
 }
@@ -228,7 +225,7 @@ function handlePostReview(event) {
 
 	const now = Date.now();
 
-	// Cache the review
+	// Update the local cache
 	event.request.clone().json().
 		then(review => asLocalReview(review, now)).
 		then(Reviews.putMany).
@@ -250,52 +247,22 @@ function handlePostReview(event) {
 		catch(error => {
 			return request.json().
 				then(body => asLocalReview(body, now)).
-				then(review => QueuedOps.
-					insert({
-						ts: Date.now(),
-						op: 'addReview',
-						args: JSON.stringify([review])
-					}).
+				then(review => OpsQueue.
+					queueOp('addReview', [review]).
 					then(() => registerForSync()).
-					then(() => new Response(JSON.stringify(review), {
-						"status": 202,
-						"statusText": "ACCEPTED"}))
+					then(() => acceptedResponseFrom(review))
 				);
 		}).
 		catch(console.error);
 }
 
-const Ops = {
-	addReview: DBHelper.addReview,
-	favorite: DBHelper.setIsFavoriteRestaurant
-}
-
-const sortByTimestampDescending = (ops) => 
-	ops.sort((x,y) => y.ts - x.ts);
-
-const parseOps = (ops) => 
-	ops.map(entry => ({
-		...entry,
-		args: JSON.parse(entry.args)
-	}));
-
-const processQueuedOps = () =>
-	QueuedOps.
-		getAll().
-		then(sortByTimestampDescending).
-		then(parseOps).
-		then(ops => Promise.all(
-			ops.map(entry => 
-				Ops[entry.op](...entry.args).
-					then(() => QueuedOps.delete(entry.ts)))
-		)).
+const performSync = () =>
+	OpsQueue.
+		processQueuedOps({
+			addReview: DBHelper.addReview,
+			favorite: DBHelper.setIsFavoriteRestaurant
+		}).
 		catch(console.error);
-
-const registerForSync = (reg = self.registration) =>
-	reg.sync.
-		register('queued-ops').
-		catch(console.error);
-
 
 // SERVICE WORKER CALLBACKS
 
@@ -362,8 +329,15 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('sync', (event) => {
-	if (event.tag == 'queued-ops') {
+	if (event.tag == config.opsQueue.tag) {
 	  	return event.waitUntil(
-		  processQueuedOps());
+			performSync());
 	}
+});
+
+self.addEventListener('message', (event) => {
+	console.info('SW SYNC MESSAGE');
+	if (event.data === 'sync')
+		return event.waitUntil(
+			performSync());
 });
