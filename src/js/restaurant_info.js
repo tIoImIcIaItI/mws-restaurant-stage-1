@@ -114,8 +114,8 @@ export default class RestaurantInfo {
 
 	setIsFavoriteRestaurant = (id, val) =>
 		DBHelper.
-			setIsFavoriteRestaurant(id, val).
-			then(Restaurants.putMany);
+			setIsFavoriteRestaurant(id, val);//.
+			// then(Restaurants.putMany);
 
 	renderFab = (document, restaurant) => {
         renderFavorite(

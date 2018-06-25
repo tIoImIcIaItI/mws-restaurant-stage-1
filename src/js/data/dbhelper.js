@@ -52,9 +52,10 @@ export default class DBHelper {
 	static setIsFavoriteRestaurant = (id, isFavorite) => 
 		fetch(api.favorite(id, isFavorite), { method: 'PUT' }).
 			then(response => {
-				if (!response || ![200, 201, 204].includes(response.status))
+				if (!response || ![200, 201, 202, 204].includes(response.status))
 					throw Error(response);
-				return response.json();
+				// return response.json();
+				return response;
 			});
 
 	/**

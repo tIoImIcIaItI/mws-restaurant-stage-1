@@ -40,7 +40,7 @@ const render = (document, container, id, value, getClassName, onChange) => {
             const svg = document.getElementById(widgetId);
             if (svg) {
                 svg.setAttribute('class', getClassName(newVal));
-                svg.innerHTML = value ? checkedPath : uncheckedPath;
+                svg.innerHTML = newVal ? checkedPath : uncheckedPath;
             }
             onChange(newVal);
         });

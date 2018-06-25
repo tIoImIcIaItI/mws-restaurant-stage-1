@@ -6,7 +6,8 @@ import config from '../config';
 import Restaurants from '../data/restaurants';
 import Reviews from '../data/reviews';
 import QueuedOps from '../data/queued-ops';
-import api, { writeOptions } from '../data/api';
+import DBHelper from '../data/dbhelper';
+import api from '../data/api';
 import { jsonResponseFrom, getParameterByName } from '../utils';
 
 const version = { number: config.cache.version };
@@ -15,7 +16,7 @@ const CACHE_NAME = `restaurant-reviews-${version.number}`;
 // RESTAURANTS
 
 const idFrom = (url) => {
-	const regex = /\/restaurants\/(\d+)$/i;
+	const regex = /\/restaurants\/(\d+)/i;
 
 	const id = (url || '').match(regex);
 
@@ -176,6 +177,46 @@ function handleCacheMatch(request, response) {
 		});
 }
 
+const parseIsFavorite = (url) => {
+	const regex = /is_favorite\=(true|false)$/i;
+
+	const val = (url || '').match(regex);
+
+	return val && val.length >= 2 && val[1] ?
+		val[1] :
+		null;
+};
+
+function putIsFavorite(event) {
+
+	const url = event.request.url;
+	const id = idFrom(url);
+	const isFavorite = parseIsFavorite(url);
+
+	// Update the local cache
+	Restaurants.favorite(id, isFavorite);
+
+	return fetch(event.request).
+		then(response => {
+			if (!response || (![200, 201, 204].includes(response.status) && (response.status < 400 || response.status >= 500)))
+				throw new Error(response ? response.status.status : 'No response from server');
+			return response;
+		}).
+		catch(error =>
+			QueuedOps.
+				insert({
+					ts: Date.now(),
+					op: 'favorite',
+					args: JSON.stringify([id, isFavorite])
+				}).
+				then(() => registerForSync()).
+				then(() => new Response(JSON.stringify(isFavorite), {
+					"status": 202,
+					"statusText": "ACCEPTED"}))
+		).
+		catch(console.error);
+}
+
 function handlePostReview(event) {
 
 	const asLocalReview = (review, now) => {
@@ -207,9 +248,6 @@ function handlePostReview(event) {
 			return response;
 		}).
 		catch(error => {
-			// console.warn('Failed to POST review');
-			// console.error(error);
-			
 			return request.json().
 				then(body => asLocalReview(body, now)).
 				then(review => QueuedOps.
@@ -228,17 +266,8 @@ function handlePostReview(event) {
 }
 
 const Ops = {
-	addReview: (review) => 
-		fetch(api.addReview(), writeOptions('POST', {
-			restaurant_id: review.restaurant_id,
-			name: review.name,
-			rating: review.rating,
-			comments: review.comments })).
-		then(response => {
-			if (!response || ![201, 202].includes(response.status))
-				throw Error(response);
-			return response.json();
-		})
+	addReview: DBHelper.addReview,
+	favorite: DBHelper.setIsFavoriteRestaurant
 }
 
 const sortByTimestampDescending = (ops) => 
@@ -300,6 +329,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
 	// console.log(`FETCH [${version.number}]: [${event.request.method}] [${event.request.url}]`);
 
+	const isFavoritePut =
+		event.request.method === 'PUT' &&
+		event.request.url.includes('is_favorite=');
+
 	const isRestrauntData =
 		event.request.method === 'GET' &&
 		event.request.url.includes('/restaurants');
@@ -317,6 +350,7 @@ self.addEventListener('fetch', (event) => {
 		event.request.url.includes('browser-sync');
 
 	event.respondWith(
+		isFavoritePut ? putIsFavorite(event) :
 		isRestrauntData ? getRestaurantData(event) :
 		isReviewData ? getReviewData(event) :
 		isReviewPost ? handlePostReview(event) :

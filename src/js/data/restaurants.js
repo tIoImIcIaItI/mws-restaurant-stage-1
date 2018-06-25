@@ -7,6 +7,14 @@ const getRestaurantsStore = (db, mode = 'readonly') =>
 const getRestaurants = (mode = 'readonly') =>
 	getDb().then(db => getRestaurantsStore(db, mode));
 
+const getRestaurantsForWrite = () =>
+	getRestaurants('readwrite');
+
+const getById = (id) =>
+	getRestaurants().
+		then(restaurants => restaurants.get(id)).
+		catch(console.error);
+
 const Restaurants = {
 
 	getAll: () =>
@@ -14,16 +22,24 @@ const Restaurants = {
 			then(restaurants => restaurants.getAll()).
 			catch(console.error),
 
-	get: (id) =>
-		getRestaurants().
-			then(restaurants => restaurants.get(id)).
-			catch(console.error),
+	get: getById,
 
 	putMany: (json) =>
 		getRestaurants('readwrite').
 			then(restaurants => 
 				putAll(restaurants, json).
 				then(restaurants.complete)).
+			catch(console.error),
+
+	favorite: (id, isFavorite) => 
+		getById(id).
+			then(r => {
+				r.is_favorite = isFavorite;
+
+				getRestaurantsForWrite().
+					then(restaurants => restaurants.put(r)).
+					catch(console.error)
+			}).
 			catch(console.error)
 };
 

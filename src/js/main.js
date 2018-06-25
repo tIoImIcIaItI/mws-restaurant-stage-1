@@ -206,8 +206,8 @@ export default class Main {
 
 	setIsFavoriteRestaurant = (id, val) =>
 		DBHelper.
-			setIsFavoriteRestaurant(id, val).
-			then(Restaurants.putMany);
+			setIsFavoriteRestaurant(id, val);//.
+			// then(Restaurants.putMany);
 
 	/**
 	 * Create all restaurants HTML and add them to the webpage.
