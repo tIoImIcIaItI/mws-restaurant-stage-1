@@ -1,7 +1,7 @@
 {
-  "name": "mws1",
-  "version": "1.0.0",
-  "description": "",
+  "name": "mws3",
+  "version": "3.0.0",
+  "description": "Udacity Mobile Web Specialist Restaurant Reviews App: Stage 3 Project Submission",
   "private": true,
   "scripts": {
     "data": "gulp data --require babel-register",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tIoImIcIaItI/mws-restaurant-stage-1.git"
+    "url": "git+https://github.com/tIoImIcIaItI/mws-restaurant-stage-3.git"
   },
   "author": "David J. King",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tIoImIcIaItI/mws-restaurant-stage-1/issues"
+    "url": "https://github.com/tIoImIcIaItI/mws-restaurant-stage-3/issues"
   },
-  "homepage": "https://github.com/tIoImIcIaItI/mws-restaurant-stage-1#readme",
+  "homepage": "https://github.com/tIoImIcIaItI/mws-restaurant-stage-3#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
@@ -42,6 +42,8 @@
     "gulp-htmlmin": "^4.0.0",
     "gulp-image-resize": "^0.13.0",
     "gulp-imagemin": "^4.1.0",
+    "imagemin-webp": "^4.1.0",
+    "gulp-webp": "^3.0.0",
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.0",
     "gulp-rename": "^1.2.2",

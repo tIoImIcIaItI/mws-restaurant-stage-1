@@ -32,10 +32,11 @@ const render = (document, restaurant) => {
 
     // image
     renderImage(
-        restaurant, 
-        document.getElementById('restaurant-img'), 
-        DBHelper.imageUrlForRestaurant(restaurant), 
-        'hero', 
+        document,
+        restaurant,
+        document.getElementById('restaurant-img'),
+        DBHelper.imageUrlForRestaurant(restaurant),
+        'hero',
         DBHelper.imageUrlForRestaurant({}));
 
     // cuisine

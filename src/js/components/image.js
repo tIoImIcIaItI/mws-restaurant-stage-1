@@ -1,8 +1,8 @@
 import config from '../../../tasks/config';
 
-const infoFor = (src) => {
+const infoFor = (src, defaultExt) => {
 	const idx = src.lastIndexOf('.');
-	const ext = idx >= 0 ? src.substring(idx) : '.jpg';
+	const ext = idx >= 0 ? src.substring(idx) : `.${defaultExt}`;
 	const base = idx >= 0 ? src.substring(0, idx) : src;
 
 	return {
@@ -11,8 +11,8 @@ const infoFor = (src) => {
 	};
 };
 
-const srcsetFor = (group, src) => {
-	const { base, ext } = infoFor(src);
+const srcsetFor = (group, src, defaultExt) => {
+	const { base, ext } = infoFor(src, defaultExt);
 
 	return config.srcset.groups[group].
 		map(set => `${base}-${set.tag}${ext} ${set.width}w`).
@@ -26,9 +26,9 @@ const sizesFor = (group) => {
 		join(', ');
 };
 
-const render = (restaurant, image, src, group, placeholder, observer) => {
+const render = (document, restaurant, image, src, group, placeholder, observer) => {
 
-	const srcset = srcsetFor(group, src);
+	const srcset = srcsetFor(group, src, 'webp');
 	const sizes = sizesFor(group);
 
 	image.className = 'restaurant-img';
@@ -50,6 +50,16 @@ const render = (restaurant, image, src, group, placeholder, observer) => {
 		image.srcset = srcset;
 		image.sizes = sizes;
 	}
+
+	const picture = image.parentElement;
+
+	// TODO: lazy load
+	// TODO: move to config
+	const src1 = document.createElement('source');
+	src1.setAttribute('type', 'image/webp');
+	src1.srcset = srcset;
+	src1.sizes = sizes;
+	picture.appendChild(src1);
 };
 
 export default render;

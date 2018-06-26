@@ -27,7 +27,7 @@ const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
         // image
         const image = document.createElement('img');
         const src = DBHelper.imageUrlForRestaurant(restaurant);
-        renderImage(restaurant, image, src, 'thumb', placeholder, observer);
+        renderImage(document, restaurant, image, src, 'thumb', placeholder, observer);
         info.append(image);
 
         const banner = document.createElement('h2'); {

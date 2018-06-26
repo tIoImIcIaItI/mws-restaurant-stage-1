@@ -3,22 +3,24 @@ import path from 'path';
 import notify from 'gulp-notify';
 import plumber from 'gulp-plumber';
 import { reload } from 'browser-sync';
-import webp from 'gulp-webp';
+import imagemin from 'gulp-imagemin';
 import config from './config';
 
 const typeConfig = config.images;
 
 const base = path.join(config.root.src, typeConfig.dist);
 
-const images = () =>
+const imageFallbacks = () =>
 	gulp.
 		src(path.join(base, typeConfig.extensions), { base: base }).
 		pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
-		pipe(webp({quality: 50})).
-		pipe(gulp.dest(path.join(config.root.src, typeConfig.dist))).
+		pipe(imagemin(
+			[imagemin.gifsicle(), imagemin.jpegtran(), imagemin.optipng(), imagemin.svgo()], 
+			{ verbose: true }
+		)).
 		pipe(gulp.dest(path.join(config.root.dist, typeConfig.dist))).
 		pipe(reload({ stream: true }));
 
-gulp.task('images', images);
+gulp.task('images:fallbacks', imageFallbacks);
 
-export default images;
+export default imageFallbacks;
