@@ -32,9 +32,3 @@ The web server ***MUST*** set the correct mime types, or the service worker will
 Google suggests [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb/related) in its [PWA course](https://developers.google.com/web/fundamentals/codelabs/your-first-pwapp/).
 
 With your server running, visit the site at `localhost` on your chosen port: `http://localhost:8000`.
-
-## Notes
-
-1. The Font Awesome icons are dynamically replaced with SVG elements including the following attributes, thus removing them from the accessibility tree.
-* aria-hidden="true"
-* role="img"
