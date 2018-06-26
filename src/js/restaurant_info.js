@@ -56,6 +56,7 @@ export default class RestaurantInfo {
 			renderReviews(
 				this.document,
 				this.document.getElementById('reviews-container'),
+				this.restaurant,
 				this.restaurant.reviews);
 
 			DBHelper.addReview(review);

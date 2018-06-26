@@ -4,7 +4,7 @@ import renderReview from './review';
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const render = (document, container, reviews) => {
+const render = (document, container, restaurant, reviews) => {
 
     if (!reviews) {
         const noReviews = document.createElement('p');
@@ -18,7 +18,7 @@ const render = (document, container, reviews) => {
 
     reviews.forEach(review => {
         const li = document.createElement('li');
-        li.appendChild(renderReview(document, review));
+        li.appendChild(renderReview(document, restaurant, review));
         ul.appendChild(li);
     });
 

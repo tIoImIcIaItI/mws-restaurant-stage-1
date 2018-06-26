@@ -51,6 +51,7 @@ const render = (document, restaurant) => {
     renderReviews(
         document,
         document.getElementById('reviews-container'),
+        restaurant,
         reviews);
 };
 
