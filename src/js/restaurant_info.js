@@ -1,7 +1,7 @@
 import moment from 'moment-mini';
 import { waitForDOMContentLoaded, getParameterByName, isTrue } from './utils/index';
 import DBHelper from './data/dbhelper';
-import { Restaurants } from './data/db';
+import NetworkMonitor from './NetworkMonitor';
 import ReviewForm from './forms/review';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
@@ -15,6 +15,7 @@ export default class RestaurantInfo {
 	constructor(window, document) {
 		this.window = window;
 		this.document = document;
+		this.monitor = new NetworkMonitor(this.window);
 		this.reviewFormVm = null;
 
 		this.map = new StaticMap(
@@ -108,14 +109,15 @@ export default class RestaurantInfo {
 					form.style.display = 'none';
 					showBtn.style.display = 'initial';
 				});
-
+				
+				// Register for connectivity events
+				this.monitor.initialize();
 			});
 	}
 
 	setIsFavoriteRestaurant = (id, val) =>
 		DBHelper.
-			setIsFavoriteRestaurant(id, val);//.
-			// then(Restaurants.putMany);
+			setIsFavoriteRestaurant(id, val);
 
 	renderFab = (document, restaurant) => {
         renderFavorite(
