@@ -2,7 +2,7 @@ import 'intersection-observer'; // polyfill IntersectionObserver
 import { waitForDOMContentLoaded } from './utils/index';
 import DBHelper from './data/dbhelper';
 import Observer from './utils/observer';
-import NetworkMonitor from './NetworkMonitor';
+import NetworkMonitor from './utils/NetworkMonitor';
 import Map from './components/map';
 import { isTrue } from './utils';
 import renderCopyright from './components/copyright';

@@ -1,0 +1,56 @@
+.review-form {
+    margin: 0;
+}
+
+.review-form h4 {
+    color: #4C5566;
+}
+
+#reviews-list {
+    margin: 0;
+    padding: 0;
+}
+
+    #reviews-list li {
+        list-style-type: none;
+    }
+
+        #reviews-list li p {
+            margin: 0 0 1em;
+        }
+
+.review-container {
+    background-color: #fff;
+    margin: 0.25rem 0;
+    padding: 1rem;
+    width: 100%;
+}
+
+.review-header {
+    display: flex;
+    margin-bottom: 0.5rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: -0.5rem;
+}
+
+.review-rating {
+    font-size: 1.25rem;
+    color: #346;
+}
+
+.review-name {
+    font-size: 1rem;
+    color: #346;
+    letter-spacing: 0.04em;
+}
+
+.review-date {
+    color: #789;
+    font-style: italic;
+}
+
+blockquote {
+    margin: 0;
+    font-size: 1rem;
+}

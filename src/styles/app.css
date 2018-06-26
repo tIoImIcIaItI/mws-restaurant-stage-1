@@ -46,10 +46,6 @@ ul {
     padding: 0;
 }
 
-blockquote {
-    margin: 0;
-}
-
 address {
     font-style: initial;
 }
@@ -90,7 +86,7 @@ section {
 /* ====================== Footer ========================= */
 
 #footer {
-    background-color: #444;
+    background-color: #252831;
     color: snow;
     font-size: 8pt;
     letter-spacing: 1px;

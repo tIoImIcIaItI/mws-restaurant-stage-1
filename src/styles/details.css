@@ -45,7 +45,7 @@ h3 {
     padding: 0.5em;
     text-align: center;
     font-size: 20pt;
-    font-weight: 200;
+    /* font-weight: 200; */
     letter-spacing: 0.1em;
     text-transform: uppercase;
     line-height: 1.1;
@@ -61,36 +61,6 @@ h3 {
 
 #fab {
     margin-bottom: -2em;
-}
-
-/* ====================== Reviews ================================= */
-
-.review-form {
-    margin: 0;
-}
-
-.review-form h4 {
-    color: #4C5566;
-}
-
-#reviews-list {
-    margin: 0;
-    padding: 0;
-}
-
-    #reviews-list li {
-        background-color: #fff;
-        list-style-type: none;
-        border-bottom: 1px solid #f3f3f3;
-        padding: 0 1em 1em;
-    }
-
-        #reviews-list li p {
-            margin: 0 0 1em;
-        }
-
-.review-name {
-    font-weight: 700;
 }
 
 /* ROOMY */

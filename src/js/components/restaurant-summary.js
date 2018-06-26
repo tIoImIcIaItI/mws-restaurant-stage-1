@@ -62,7 +62,7 @@ const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
         // details button
         const details = document.createElement('a');
         details.className = 'btn'
-        details.innerHTML = `<span aria-hidden="true">Details</span><span class="sr-only"> for ${restaurant.name}</span>`;
+        details.innerHTML = `Details<span class="sr-only"> for ${restaurant.name}</span>`;
         details.href = DBHelper.urlForRestaurant(restaurant);
         footer.append(details);
 

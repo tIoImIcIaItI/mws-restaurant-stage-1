@@ -1,7 +1,7 @@
 import moment from 'moment-mini';
 import { waitForDOMContentLoaded, getParameterByName, isTrue } from './utils/index';
 import DBHelper from './data/dbhelper';
-import NetworkMonitor from './NetworkMonitor';
+import NetworkMonitor from './utils/NetworkMonitor';
 import ReviewForm from './forms/review';
 import StaticMap from './components/staticmap';
 import renderBreadcrumb from './components/breadcrumb';
