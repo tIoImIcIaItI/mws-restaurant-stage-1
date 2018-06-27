@@ -33,7 +33,7 @@
         "dist": "img",
         "extensions": "*.+(jpg|jpeg|gif|png|svg|webp)",
         "groups": {
-            "thumb": [
+            "thumb": { "default": "sm", "sets": [
                 {
                     "width": 312,
                     "tag": "sm",
@@ -44,8 +44,8 @@
                     "tag": "md",
                     "size": "640px"
                 }
-            ],
-            "hero": [
+            ] },
+            "hero": { "default": "md", "sets": [
                 {
                     "width": 312,
                     "tag": "sm"
@@ -59,7 +59,7 @@
                     "tag": "lg",
                     "size": "100vw"
                 }
-            ]
+            ] }
         }
     },
     "images": {

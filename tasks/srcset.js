@@ -20,7 +20,7 @@ const srcset = (done) => {
 		Object.keys(groups).forEach(k => {
 			let group = groups[k];
 
-			group.forEach(set => {
+			group.sets.forEach(set => {
 				gulp.
 					src(path.join(base, typeConfig.extensions), { base: base }).
 					pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).

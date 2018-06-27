@@ -25,10 +25,22 @@ const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
     info.className = 'restaurant-info'; {
 
         // image
-        const image = document.createElement('img');
-        const src = DBHelper.imageUrlForRestaurant(restaurant);
-        renderImage(document, restaurant, image, src, 'thumb', placeholder, observer);
-        info.append(image);
+        const picture = document.createElement('picture'); {
+            info.append(picture);
+            
+            const image = document.createElement('img');
+            const src = DBHelper.imageUrlForRestaurant(restaurant);
+            picture.append(image);
+            renderImage(
+                document,
+                restaurant.name,
+                'restaurant-img',
+                image,
+                src,
+                'thumb',
+                placeholder,
+                observer);
+        }
 
         const banner = document.createElement('h2'); {
 

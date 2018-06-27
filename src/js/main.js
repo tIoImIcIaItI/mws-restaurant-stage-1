@@ -7,6 +7,7 @@ import Map from './components/map';
 import { isTrue } from './utils';
 import renderCopyright from './components/copyright';
 import renderRestaurant from './components/restaurant-summary';
+import { loadLazyImage } from './components/image';
 
 export default class Main {
 
@@ -21,22 +22,17 @@ export default class Main {
 
 	createObserver = () => {
 
-		this.callback = (entries, observer) => {
+		this.imageObserved = (entries, observer) => {
 			entries.forEach(entry => {
 				if (!entry.isIntersecting) return;
 
-				const image = entry.target;
-				// console.log(`INTERSECTING: ${image.getAttribute('data-src')}`);
+				loadLazyImage(entry.target);
 
-				image.src = image.dataset.src;
-				image.srcset = image.dataset.srcset;
-				image.sizes = image.dataset.sizes;
-
-				observer.unobserve(image);
+				observer.unobserve(entry.target);
 			});
 		};
 
-		this.observer = new Observer(this.callback, {
+		this.observer = new Observer(this.imageObserved, {
 			threshold: 0.05
 		});
 	};

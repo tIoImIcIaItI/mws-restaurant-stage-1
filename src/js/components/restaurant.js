@@ -33,7 +33,8 @@ const render = (document, restaurant) => {
     // image
     renderImage(
         document,
-        restaurant,
+        restaurant.name,
+        'restaurant-img',
         document.getElementById('restaurant-img'),
         DBHelper.imageUrlForRestaurant(restaurant),
         'hero',
