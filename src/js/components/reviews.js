@@ -1,4 +1,3 @@
-import '../utils/dom';
 import renderReview from './review';
 
 /**
@@ -14,7 +13,7 @@ const render = (document, container, restaurant, reviews) => {
     }
 
     const ul = document.getElementById('reviews-list');
-    removeAllChildren(ul);
+    ul.innerHTML = '';
 
     reviews.forEach(review => {
         const li = document.createElement('li');

@@ -12,6 +12,12 @@ textarea {
     width: 100%;
 }
 
+legend {
+    opacity: 0.75;
+    color: #346;
+    font-size: 0.75rem;
+}
+
 .validation-error {
     font-size: 1em;
     line-height: 1.2em;
