@@ -7,6 +7,7 @@ secrets.*
 .vs
 
 # Build Outputs
+src/img
 dist
 
 audit.txt

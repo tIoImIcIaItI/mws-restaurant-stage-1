@@ -8,7 +8,7 @@ const isProduction = (process.env.NODE_ENV === 'production');
 console.log(`ENV: [${process.env.NODE_ENV}] [${isProduction}]`);
 
 let config = {
-	mode: process.env.NODE_ENV,// TODO: process.env.NODE_ENV,
+	mode: process.env.NODE_ENV,
 	entry: isProduction ?
 		{
 			index: './js/pages/index.js',

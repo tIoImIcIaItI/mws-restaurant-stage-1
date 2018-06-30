@@ -4,14 +4,16 @@
   "description": "Udacity Mobile Web Specialist Restaurant Reviews App: Stage 3 Project Submission",
   "private": true,
   "scripts": {
-    "data": "gulp data --require babel-register",
-    "html": "gulp html --require babel-register",
-    "img": "gulp images --require babel-register",
     "start": "set NODE_ENV=development& gulp --require babel-register --gulpfile tasks",
     "build": "set NODE_ENV=production& gulp build --require babel-register --gulpfile tasks",
+    "data": "gulp data --require babel-register",
+    "html": "gulp html --require babel-register",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean:srcset": "gulp clean:srcset --require babel-register",
     "srcset": "gulp srcset --require babel-register",
-    "clean:srcset": "gulp clean:srcset --require babel-register"
+    "images:fallbacks": "gulp images:fallbacks --require babel-register",
+    "images": "gulp images --require babel-register",
+    "images:copy": "gulp images:copy --require babel-register"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-all": "^1.1.0",
     "gulp-file-include": "^2.0.1",
     "gulp-htmlmin": "^4.0.0",
     "gulp-image-resize": "^0.13.0",

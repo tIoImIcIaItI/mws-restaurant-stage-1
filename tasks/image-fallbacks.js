@@ -18,7 +18,7 @@ const imageFallbacks = () =>
 			[imagemin.gifsicle(), imagemin.jpegtran(), imagemin.optipng(), imagemin.svgo()], 
 			{ verbose: true }
 		)).
-		pipe(gulp.dest(path.join(config.root.dist, typeConfig.dist))).
+		pipe(gulp.dest(path.join(config.root.src, typeConfig.dist))).
 		pipe(reload({ stream: true }));
 
 gulp.task('images:fallbacks', imageFallbacks);
