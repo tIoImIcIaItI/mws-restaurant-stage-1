@@ -6,7 +6,7 @@ class NetworkMonitor {
 	}
 
 	initialize = () => {
-		this.window.addEventListener('online',  this.updateOnlineStatus);
+		this.window.addEventListener('online', this.updateOnlineStatus);
 		this.window.addEventListener('offline', this.updateOnlineStatus);
 	};
 

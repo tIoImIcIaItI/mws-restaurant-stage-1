@@ -9,7 +9,7 @@ const pattern = path.join(base, typeConfig.extensions);
 
 const cleanSrcset = (done, dryRun) =>
 	del([pattern], { dryRun: dryRun }).
-		then(paths => !dryRun || 
+		then(paths => !dryRun ||
 			console.warn('Files and folders that would be deleted:\n', paths.join('\n')));
 
 gulp.task('clean:srcset', cleanSrcset);

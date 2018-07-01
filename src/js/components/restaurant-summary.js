@@ -6,8 +6,8 @@ import renderImage from './image';
 import renderFavorite from './favorite';
 
 const placeholder = {
-    src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
-    style: { height: '100vh' }
+	src: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+	style: { height: '100vh' }
 };
 
 /**
@@ -15,83 +15,83 @@ const placeholder = {
  */
 const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
 
-    const li = document.createElement('li');
-    li.className = 'card card-1';
+	const li = document.createElement('li');
+	li.className = 'card card-1';
 
-    const article = document.createElement('article');
-    li.append(article);
+	const article = document.createElement('article');
+	li.append(article);
 
-    const info = document.createElement('div');
-    info.className = 'restaurant-info'; {
+	const info = document.createElement('div');
+	info.className = 'restaurant-info'; {
 
-        // image
-        const picture = document.createElement('picture'); {
-            info.append(picture);
-            
-            const image = document.createElement('img');
-            const src = DBHelper.imageUrlForRestaurant(restaurant);
-            picture.append(image);
-            renderImage(
-                document,
-                restaurant.name,
-                'restaurant-img',
-                image,
-                src,
-                'thumb',
-                placeholder,
-                observer);
-        }
+		// image
+		const picture = document.createElement('picture'); {
+			info.append(picture);
 
-        const banner = document.createElement('h2'); {
+			const image = document.createElement('img');
+			const src = DBHelper.imageUrlForRestaurant(restaurant);
+			picture.append(image);
+			renderImage(
+				document,
+				restaurant.name,
+				'restaurant-img',
+				image,
+				src,
+				'thumb',
+				placeholder,
+				observer);
+		}
 
-            // name
-            const name = document.createElement('span');
-            name.innerHTML = restaurant.name;
-            banner.append(name);
-        }
-        info.append(banner);
+		const banner = document.createElement('h2'); {
 
-        const location = document.createElement('div');
-        location.className = 'restaurant-location'; {
+			// name
+			const name = document.createElement('span');
+			name.innerHTML = restaurant.name;
+			banner.append(name);
+		}
+		info.append(banner);
 
-            // neighborhood
-            const neighborhood = document.createElement('p');
-            neighborhood.innerHTML = restaurant.neighborhood;
-            location.append(neighborhood);
+		const location = document.createElement('div');
+		location.className = 'restaurant-location'; {
 
-            // address
-            const address = document.createElement('p');
-            address.innerHTML = renderAddress(restaurant.address);
-            location.append(address);
-        }
-        info.append(location);
-    }
-    article.append(info);
+			// neighborhood
+			const neighborhood = document.createElement('p');
+			neighborhood.innerHTML = restaurant.neighborhood;
+			location.append(neighborhood);
 
-    const footer = document.createElement('footer');{
-        footer.className = 'restaurant-footer';
+			// address
+			const address = document.createElement('p');
+			address.innerHTML = renderAddress(restaurant.address);
+			location.append(address);
+		}
+		info.append(location);
+	}
+	article.append(info);
 
-        // details button
-        const details = document.createElement('a');
-        details.className = 'btn'
-        details.innerHTML = `Details<span class="sr-only"> for ${restaurant.name}</span>`;
-        details.href = DBHelper.urlForRestaurant(restaurant);
-        footer.append(details);
+	const footer = document.createElement('footer'); {
+		footer.className = 'restaurant-footer';
 
-        // favorite checkbox
-        renderFavorite(
-            document,
-            footer,
-            `is-favorite-${restaurant.id}`,
-            isTrue(restaurant.is_favorite),
-            val => val ? 
-                'btn btn-icon favorite is-favorite svg-inline--fa fa-w-16' : 
-                'btn btn-icon favorite is-not-favorite svg-inline--fa fa-w-16',
-            isFavorite => setIsFavoriteRestaurant(restaurant.id, isFavorite));
-    }
-    article.append(footer);
+		// details button
+		const details = document.createElement('a');
+		details.className = 'btn'
+		details.innerHTML = `Details<span class="sr-only"> for ${restaurant.name}</span>`;
+		details.href = DBHelper.urlForRestaurant(restaurant);
+		footer.append(details);
 
-    return li;
+		// favorite checkbox
+		renderFavorite(
+			document,
+			footer,
+			`is-favorite-${restaurant.id}`,
+			isTrue(restaurant.is_favorite),
+			val => val ?
+				'btn btn-icon favorite is-favorite svg-inline--fa fa-w-16' :
+				'btn btn-icon favorite is-not-favorite svg-inline--fa fa-w-16',
+			isFavorite => setIsFavoriteRestaurant(restaurant.id, isFavorite));
+	}
+	article.append(footer);
+
+	return li;
 };
 
 export default render;

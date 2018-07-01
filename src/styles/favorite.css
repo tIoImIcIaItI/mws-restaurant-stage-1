@@ -9,23 +9,23 @@
     user-select: none;
 }
 
-.container input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
+    .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
 
-.container input:active~.favorite {
-    background-color: #bbb;
-}
+        .container input:active ~ .favorite {
+            background-color: #bbb;
+        }
 
-.container input:focus~.favorite {
-    background-color: #ddd;
-}
+        .container input:focus ~ .favorite {
+            background-color: #ddd;
+        }
 
-.container .favorite:hover {
-    background-color: #eaeaea;
-}
+    .container .favorite:hover {
+        background-color: #eaeaea;
+    }
 
 .is-favorite {
     color: #2D7EBC;

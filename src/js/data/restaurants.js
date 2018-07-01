@@ -26,12 +26,12 @@ const Restaurants = {
 
 	putMany: (json) =>
 		getRestaurants('readwrite').
-			then(restaurants => 
+			then(restaurants =>
 				putAll(restaurants, json).
-				then(restaurants.complete)).
+					then(restaurants.complete)).
 			catch(console.error),
 
-	favorite: (id, isFavorite) => 
+	favorite: (id, isFavorite) =>
 		getById(id).
 			then(r => {
 				r.is_favorite = isFavorite;

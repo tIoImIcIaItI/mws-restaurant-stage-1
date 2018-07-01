@@ -104,7 +104,7 @@ export default class Main {
 
 		// Keep widget in sync
 		this.document.getElementById('map-container').
-		style.display = showMap ? 'block' : 'none';
+			style.display = showMap ? 'block' : 'none';
 
 		// Lazy-load the actual map
 		if (showMap && !this.mapInitialized) {

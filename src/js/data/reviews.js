@@ -12,14 +12,14 @@ const getReviewsForWrite = () =>
 	getReviews('readwrite');
 
 // https://stackoverflow.com/questions/26203075/querying-an-indexeddb-compound-index-with-a-shorter-array
-const reviewKeyForRestaurant = (restaurantId) => 
+const reviewKeyForRestaurant = (restaurantId) =>
 	IDBKeyRange.bound([restaurantId], [restaurantId, []]);
 
-const reviewContentHash = (r) => 
+const reviewContentHash = (r) =>
 	hash(`${r.restaurant_id}${r.name}${r.rating}${r.comments}`);
 
 const hashReviewsContent = (reviews) => {
-	reviews.forEach(r => 
+	reviews.forEach(r =>
 		r.hashCode = reviewContentHash(r));
 	return reviews;
 };
@@ -34,7 +34,7 @@ const uncacheReviews = (keys) => {
 		return Promise.resolve(undefined);
 
 	return getReviewsForWrite().
-		then(reviews => 
+		then(reviews =>
 			Promise.all(keys.map(key => reviews.delete(key))).
 				then(() => reviews.complete)
 		);
@@ -44,7 +44,7 @@ const keyForReview = (review) =>
 	IDBKeyRange.only([review.restaurant_id, review.id]);
 
 const getStaleReviews = (partitionedReviews) =>
-	whereExistsIn(...partitionedReviews, (x,y) => x.hashCode === y.hashCode)
+	whereExistsIn(...partitionedReviews, (x, y) => x.hashCode === y.hashCode)
 
 const getAll = () =>
 	getReviews().
@@ -67,8 +67,8 @@ const Reviews = {
 		getReviews().
 			then(reviews => reviews.getAll(reviewKeyForRestaurant(restaurantId))).
 			catch(console.error),
-	
-	putMany: (json) => 
+
+	putMany: (json) =>
 		getReviewsForWrite().
 			then(reviews => putAll(reviews, json)).
 			then(() => reconcileCachedReviews()).

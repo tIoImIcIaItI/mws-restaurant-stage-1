@@ -1,9 +1,10 @@
 import config from '../config';
 
-export const writeOptions = (method, data) => ({ 
-	method: method, 
+export const writeOptions = (method, data) => ({
+	method: method,
 	body: JSON.stringify(data),
-	headers: { 'content-type': 'application/json' } }
+	headers: { 'content-type': 'application/json' }
+}
 );
 
 class RestaurantsApi {
@@ -16,7 +17,7 @@ class RestaurantsApi {
 	static restaurants() {
 		return `${RestaurantsApi.base}/restaurants`;
 	}
-	
+
 	static restaurant(id) {
 		return `${RestaurantsApi.base}/restaurants/${id}`;
 	}
@@ -26,20 +27,20 @@ class RestaurantsApi {
 	}
 
 	// REVIEWS
-	
-	static reviewsForRestaurant(id){
+
+	static reviewsForRestaurant(id) {
 		return `${RestaurantsApi.base}/reviews/?restaurant_id=${id}`;
 	}
 
-	static addReview(){
+	static addReview() {
 		return `${RestaurantsApi.base}/reviews/`;
 	}
 
-	static updateReview(id){
+	static updateReview(id) {
 		return `${RestaurantsApi.base}/reviews/${id}`;
 	}
 
-	static deleteReview(id){
+	static deleteReview(id) {
 		return `${RestaurantsApi.base}/reviews/${id}`;
 	}
 }

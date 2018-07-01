@@ -46,7 +46,7 @@ fieldset:not(.has-error) fieldset:not(.has-success) .form-control:hover {
     border-bottom-color: #2D7EBC;
 }
 
-fieldset:not(.has-error) fieldset:not(.has-success) .form-control:focus{
+fieldset:not(.has-error) fieldset:not(.has-success) .form-control:focus {
     border-bottom-color: #2D7EBC;
 }
 

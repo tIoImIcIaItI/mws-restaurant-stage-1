@@ -10,7 +10,7 @@ function distinct(arr, key) {
  */
 export default class DBHelper {
 
-	static getReviewsForRestaurant = (id) => 
+	static getReviewsForRestaurant = (id) =>
 		fetch(api.reviewsForRestaurant(id)).
 			then(response => {
 				if (!response || response.status !== 200)
@@ -18,30 +18,32 @@ export default class DBHelper {
 				return response.json();
 			});
 
-	static addReview = (review) => 
+	static addReview = (review) =>
 		fetch(api.addReview(), writeOptions('POST', {
 			restaurant_id: review.restaurant_id,
 			name: review.name,
 			rating: review.rating,
-			comments: review.comments })).
-		then(response => {
-			if (!response || ![201, 202].includes(response.status))
-				throw Error(response);
-			return response.json();
-		});
+			comments: review.comments
+		})).
+			then(response => {
+				if (!response || ![201, 202].includes(response.status))
+					throw Error(response);
+				return response.json();
+			});
 
-	static updateReview = (review) => 
+	static updateReview = (review) =>
 		fetch(api.updateReview(review.id), writeOptions('PUT', {
 			name: review.name,
 			rating: review.rating,
-			comments: review.comments })).
-		then(response => {
+			comments: review.comments
+		})).
+			then(response => {
 				if (!response || ![200, 201, 204].includes(response.status))
 					throw Error(response);
 				return response.json();
 			});
 
-	static deleteReview = (id) => 
+	static deleteReview = (id) =>
 		fetch(api.updateReview(id), { method: 'DELETE' }).
 			then(response => {
 				if (!response || ![200, 202, 204].includes(response.status))
@@ -49,7 +51,7 @@ export default class DBHelper {
 				return response.json();
 			});
 
-	static setIsFavoriteRestaurant = (id, isFavorite) => 
+	static setIsFavoriteRestaurant = (id, isFavorite) =>
 		fetch(api.favorite(id, isFavorite), { method: 'PUT' }).
 			then(response => {
 				if (!response || ![200, 201, 202, 204].includes(response.status))

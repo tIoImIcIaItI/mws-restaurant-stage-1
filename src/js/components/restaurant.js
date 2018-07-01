@@ -9,52 +9,52 @@ import renderImage from './image';
  */
 const render = (document, restaurant) => {
 
-    const setInnerHtml = (id, val) => 
-        document.getElementById(id).innerHTML = val;
+	const setInnerHtml = (id, val) =>
+		document.getElementById(id).innerHTML = val;
 
-    const { 
-        name, neighborhood, address, 
-        cuisine_type, operating_hours, reviews 
-    } = restaurant;
+	const {
+		name, neighborhood, address,
+		cuisine_type, operating_hours, reviews
+	} = restaurant;
 
-    // page title
-    document.title = 
-        `${name} - Restraurant Reviews`;
+	// page title
+	document.title =
+		`${name} - Restraurant Reviews`;
 
-    // name
-    setInnerHtml('restaurant-name', name);
+	// name
+	setInnerHtml('restaurant-name', name);
 
-    // neighborhood
-    setInnerHtml('restaurant-neighborhood', neighborhood);
+	// neighborhood
+	setInnerHtml('restaurant-neighborhood', neighborhood);
 
-    // address
-    setInnerHtml('restaurant-address', renderAddress(address));
+	// address
+	setInnerHtml('restaurant-address', renderAddress(address));
 
-    // image
-    renderImage(
-        document,
-        restaurant.name,
-        'restaurant-img',
-        document.getElementById('restaurant-img'),
-        DBHelper.imageUrlForRestaurant(restaurant),
-        'hero',
-        DBHelper.imageUrlForRestaurant({}));
+	// image
+	renderImage(
+		document,
+		restaurant.name,
+		'restaurant-img',
+		document.getElementById('restaurant-img'),
+		DBHelper.imageUrlForRestaurant(restaurant),
+		'hero',
+		DBHelper.imageUrlForRestaurant({}));
 
-    // cuisine
-    setInnerHtml('restaurant-cuisine', cuisine_type);
+	// cuisine
+	setInnerHtml('restaurant-cuisine', cuisine_type);
 
-    // operating hours
-    renderHours(
-        document,
-        document.getElementById('restaurant-hours'),
-        operating_hours);
+	// operating hours
+	renderHours(
+		document,
+		document.getElementById('restaurant-hours'),
+		operating_hours);
 
-    // reviews
-    renderReviews(
-        document,
-        document.getElementById('reviews-container'),
-        restaurant,
-        reviews);
+	// reviews
+	renderReviews(
+		document,
+		document.getElementById('reviews-container'),
+		restaurant,
+		reviews);
 };
 
 export default render;

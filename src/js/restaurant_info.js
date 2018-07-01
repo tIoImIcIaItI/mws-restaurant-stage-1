@@ -26,7 +26,7 @@ export default class RestaurantInfo {
 	}
 
 	sortReviews = (reviews) =>
-		reviews.sort((x, y) => 
+		reviews.sort((x, y) =>
 			moment(y.updatedAt).valueOf() - moment(x.updatedAt).valueOf());
 
 	initializeReviewForm = (form, showBtn) => {
@@ -42,15 +42,15 @@ export default class RestaurantInfo {
 
 			form.style.display = 'none';
 			showBtn.style.display = 'initial';
-			
-			const { name, rating, comments } = 
+
+			const { name, rating, comments } =
 				this.reviewFormVm.getFormData();
 
 			const review = {
 				restaurant_id: this.restaurant.id,
 				name, rating, comments
 			};
-			
+
 			this.restaurant.reviews.unshift(review);
 
 			renderReviews(
@@ -101,7 +101,7 @@ export default class RestaurantInfo {
 					if (!this.reviewFormVm)
 						this.initializeReviewForm(form, showBtn);
 					else
-						this.reviewFormVm.reset();						
+						this.reviewFormVm.reset();
 
 					this.reviewFormVm.setInitialFocus();
 				});
@@ -110,7 +110,7 @@ export default class RestaurantInfo {
 					form.style.display = 'none';
 					showBtn.style.display = 'initial';
 				});
-				
+
 				// Register for connectivity events
 				this.monitor.initialize();
 			});
@@ -121,13 +121,13 @@ export default class RestaurantInfo {
 			setIsFavoriteRestaurant(id, val);
 
 	renderFab = (document, restaurant) => {
-        renderFavorite(
-            document,
-            document.getElementById('fab'),
-            `is-favorite-${restaurant.id}`,
+		renderFavorite(
+			document,
+			document.getElementById('fab'),
+			`is-favorite-${restaurant.id}`,
 			isTrue(restaurant.is_favorite),
-			val => val ? 
-				'btn btn-fab favorite is-favorite svg-inline--fa fa-w-16' : 
+			val => val ?
+				'btn btn-fab favorite is-favorite svg-inline--fa fa-w-16' :
 				'btn btn-fab favorite is-not-favorite svg-inline--fa fa-w-16',
 			isFavorite => this.setIsFavoriteRestaurant(restaurant.id, isFavorite));
 	};

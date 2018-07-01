@@ -13,15 +13,15 @@ const groups = config.srcset.groups;
 const groupKeys = Object.keys(groups);
 
 const srcset = () =>
-	all(groupKeys.map(k => 
+	all(groupKeys.map(k =>
 		all(groups[k].sets.map(set =>
-				gulp.
-					src(path.join(base, typeConfig.extensions), { base: base }).
-					pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
-					pipe(imageResize({ imageMagick: true, width: set.width })).
-					pipe(rename((p) => p.basename = `${p.basename}-${set.tag}`)).
-					pipe(gulp.dest(path.join(config.root.src, typeConfig.dist, typeConfig.dist)))
-			))
+			gulp.
+				src(path.join(base, typeConfig.extensions), { base: base }).
+				pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
+				pipe(imageResize({ imageMagick: true, width: set.width })).
+				pipe(rename((p) => p.basename = `${p.basename}-${set.tag}`)).
+				pipe(gulp.dest(path.join(config.root.src, typeConfig.dist, typeConfig.dist)))
+		))
 	));
 
 gulp.task('srcset', srcset);

@@ -14,7 +14,7 @@ const images = () =>
 	gulp.
 		src(path.join(base, typeConfig.extensions), { base: base }).
 		pipe(plumber({ errorHandler: notify.onError('Error: <%= error.message %>') })).
-		pipe(webp({quality: 50})).
+		pipe(webp({ quality: 50 })).
 		pipe(gulp.dest(path.join(config.root.src, typeConfig.dist))).
 		pipe(reload({ stream: true }));
 

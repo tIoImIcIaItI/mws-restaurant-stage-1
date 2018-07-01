@@ -7,11 +7,11 @@ const getQueuedOpsStore = (db, mode = 'readonly') =>
 const getQueuedOps = (mode = 'readonly') =>
 	getDb().then(db => getQueuedOpsStore(db, mode));
 
-const getQueuedOpsForWrite = () => 
+const getQueuedOpsForWrite = () =>
 	getQueuedOps('readwrite');
 
 const QueuedOps = {
-	
+
 	insert: (op) =>
 		getQueuedOpsForWrite().
 			then(ops => ops.put(op)).

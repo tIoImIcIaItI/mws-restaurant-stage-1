@@ -22,7 +22,7 @@ const jsonResponse = (obj, status, statusText) =>
 export const jsonResponseFrom = (obj) =>
 	jsonResponse(obj, 200, "ok");
 
-export const acceptedResponseFrom = (obj) => 
+export const acceptedResponseFrom = (obj) =>
 	jsonResponse(obj, 202, "ACCEPTED");
 
 // SOURCE: https://stackoverflow.com/questions/9457891/how-to-detect-if-domcontentloaded-was-fired
@@ -53,5 +53,5 @@ export const getParameterByName = (name, url) => {
 
 export const isTrue = (value) =>
 	value === 'true' ? true :
-	value === 'false' ? false :
-	value;
+		value === 'false' ? false :
+			value;

@@ -3,8 +3,8 @@ import '../../styles/cards.css';
 import '../../styles/reviews.css';
 
 // SOURCE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
-const sequence = (length) => 
-	Array.from({length}, (_, i) => i);
+const sequence = (length) =>
+	Array.from({ length }, (_, i) => i);
 
 const reviewDateHtml = (date) =>
 	`<time datetime="${date.format('YYYY-MM-DD')}">${date.fromNow()}</time>`;
@@ -17,7 +17,7 @@ const datePublished = (date) => {
 
 const itemReviewed = (item) => {
 	return (
-`<div hidden aria-hidden="true" itemprop="itemReviewed" itemscope itemtype="http://schema.org/Thing">
+		`<div hidden aria-hidden="true" itemprop="itemReviewed" itemscope itemtype="http://schema.org/Thing">
 	<span itemprop="name">${item}</span>
 </div>`);
 };
@@ -31,8 +31,8 @@ const renderRatingElement = (document, min, value, max, label, star) => {
 	rating.setAttribute('itemscope', '');
 	rating.setAttribute('itemtype', 'http://schema.org/Rating');
 	rating.className = 'review-rating';
-	rating.innerHTML = 
-`<span aria-hidden="true">${stars}</span>
+	rating.innerHTML =
+		`<span aria-hidden="true">${stars}</span>
 <div class="sr-only">
 	<meta itemprop="worstRating" content = "${min}">
 	<span>${label}</span>

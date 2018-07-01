@@ -7,26 +7,26 @@ export default class StaticMap {
 		this.getElement = getElement;
 	}
 
-    getSrc = (mapOptions) => {
+	getSrc = (mapOptions) => {
 
-        const options = {
-            ...config.maps.static.options,
-            ...mapOptions,
-            key: config.maps.key
-        };
+		const options = {
+			...config.maps.static.options,
+			...mapOptions,
+			key: config.maps.key
+		};
 
-        const params = Object.entries(options).reduce((a,c,i) => {
-            return a + `${i > 0 ? '&' : ''}${c[0]}=${c[1]}`;
-        }, ''); // TODO: url encode
+		const params = Object.entries(options).reduce((a, c, i) => {
+			return a + `${i > 0 ? '&' : ''}${c[0]}=${c[1]}`;
+		}, ''); // TODO: url encode
 
-        return `${config.maps.static.url}?${params}`;
-    };
+		return `${config.maps.static.url}?${params}`;
+	};
 
 	render = (alt, mapOptions) => {
 
 		const img = this.document.createElement('img');
-        img.alt = alt || 'Google map';
-        img.setAttribute('src', this.getSrc(mapOptions));
+		img.alt = alt || 'Google map';
+		img.setAttribute('src', this.getSrc(mapOptions));
 
 		this.getElement().appendChild(img);
 	};

@@ -24,7 +24,7 @@ const infoFor = (src, defaultExt) => {
 	return { base, ext };
 };
 
-const srcNameFor = (base, set, ext) => 
+const srcNameFor = (base, set, ext) =>
 	`${base}-${set.tag}${ext}`;
 
 const defaultSetFor = (group) => {
@@ -35,7 +35,7 @@ const defaultSetFor = (group) => {
 const defaultSrcFor = (group, src, defaultExt) => {
 	const { base, ext } = infoFor(src, defaultExt);
 	return srcNameFor(base, defaultSetFor(group), ext);
- };
+};
 
 const srcsetFor = (group, src, defaultExt) => {
 	const { base, ext } = infoFor(src, defaultExt);
@@ -90,7 +90,7 @@ const render = (document, alt, className, image, src, group, placeholder, observ
 		image.setAttribute('data-srcset', srcsetFor(group, src, 'jpg'));
 		image.setAttribute('data-sizes', sizes);
 		image.src = placeholder.src;
-		
+
 		for (const [key, value] of Object.entries(placeholder.style))
 			image.style[key] = value;
 

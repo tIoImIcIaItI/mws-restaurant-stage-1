@@ -31,7 +31,7 @@ p {
 }
 
 body {
-    font-family: /*"Roboto", */sans-serif;
+    font-family: /*"Roboto", */ sans-serif;
     background-color: #fdfdfd;
     margin-top: 0;
     margin-bottom: 0;
@@ -95,16 +95,16 @@ section {
     text-transform: uppercase;
 }
 
-#footer a {
-    color: skyblue;
-    text-decoration: none;
-}
+    #footer a {
+        color: skyblue;
+        text-decoration: none;
+    }
 
-#footer a:hover,
-a:focus {
-    color: white;
-    text-decoration: underline;
-}
+        #footer a:hover,
+        a:focus {
+            color: white;
+            text-decoration: underline;
+        }
 
 /* ====================== Navigation ====================== */
 
@@ -116,13 +116,13 @@ a:focus {
     text-align: center;
 }
 
-#site-header h1 a {
-    color: snow;
-    font-size: 14pt;
-    font-weight: 200;
-    letter-spacing: 10px;
-    text-transform: uppercase;
-}
+    #site-header h1 a {
+        color: snow;
+        font-size: 14pt;
+        font-weight: 200;
+        letter-spacing: 10px;
+        text-transform: uppercase;
+    }
 
 /* ====================== Map ====================== */
 
