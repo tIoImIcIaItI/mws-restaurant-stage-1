@@ -22,9 +22,9 @@ const itemReviewed = (item) => {
 </div>`);
 };
 
-const renderRatingElement = (document, min, value, max) => {
+const renderRatingElement = (document, min, value, max, label, star) => {
 
-	const stars = sequence(value).reduce((p, _) => p + '★&nbsp;', '');
+	const stars = sequence(value).reduce((p, _) => p + star, '');
 
 	const rating = document.createElement('div');
 	rating.setAttribute('itemprop', 'reviewRating');
@@ -35,7 +35,7 @@ const renderRatingElement = (document, min, value, max) => {
 `<span aria-hidden="true">${stars}</span>
 <div class="sr-only">
 	<meta itemprop="worstRating" content = "${min}">
-	<span >Rating: </span>
+	<span>${label}</span>
 	<span itemprop="ratingValue">${value}</span> of 
 	<span itemprop="bestRating">${max}</span>stars
 </div>`;
@@ -85,7 +85,8 @@ const render = (document, restaurant, review) => {
 			// rating widget
 			header.appendChild(
 				renderRatingElement(
-					document, 1, review.rating, 5));
+					document, 1, review.rating, 5,
+					'Rated ', '★&nbsp;'));
 		}
 		article.appendChild(header);
 

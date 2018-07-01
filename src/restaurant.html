@@ -52,8 +52,9 @@
         <div id="restaurant-body">
 
             <section id="restaurant-details" role="region" aria-live="polite">
-                
-                <div>
+                <h2 class="sr-only">Restaurant Details</h2>
+
+                <section>
                     <h3 id="cuisine-header">
                         <span class="label">
                             <svg class="svg-inline--fa fa-utensils fa-w-13" aria-hidden="true" data-prefix="fas" data-icon="utensils" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 416 512" data-fa-i2svg=""><path fill="currentColor" d="M207.9 15.2c.8 4.7 16.1 94.5 16.1 128.8 0 52.3-27.8 89.6-68.9 104.6L168 486.7c.7 13.7-10.2 25.3-24 25.3H80c-13.7 0-24.7-11.5-24-25.3l12.9-238.1C27.7 233.6 0 196.2 0 144 0 109.6 15.3 19.9 16.1 15.2 19.3-5.1 61.4-5.4 64 16.3v141.2c1.3 3.4 15.1 3.2 16 0 1.4-25.3 7.9-139.2 8-141.8 3.3-20.8 44.7-20.8 47.9 0 .2 2.7 6.6 116.5 8 141.8.9 3.2 14.8 3.4 16 0V16.3c2.6-21.6 44.8-21.4 48-1.1zm119.2 285.7l-15 185.1c-1.2 14 9.9 26 23.9 26h56c13.3 0 24-10.7 24-24V24c0-13.2-10.7-24-24-24-82.5 0-221.4 178.5-64.9 300.9z"></path></svg>
@@ -61,9 +62,9 @@
                         </span>
                     </h3>
                     <p id="restaurant-cuisine"></p>
-                </div>
+                </section>
                 
-                <div>
+                <section>
                     <h3 id="location-header">
                         <span class="label">
                             <svg class="svg-inline--fa fa-building fa-w-14" aria-hidden="true" data-prefix="far" data-icon="building" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M128 148v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12zm140 12h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm-128 96h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm128 0h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm-76 84v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm76 12h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm180 124v36H0v-36c0-6.6 5.4-12 12-12h19.5V24c0-13.3 10.7-24 24-24h337c13.3 0 24 10.7 24 24v440H436c6.6 0 12 5.4 12 12zM79.5 463H192v-67c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v67h112.5V49L80 48l-.5 415z"></path></svg>
@@ -74,9 +75,9 @@
                         <span id="restaurant-neighborhood"></span>
                         <span id="restaurant-address"></span>
                     </p>
-                </div>
+                </section>
                 
-                <div>
+                <section>
                     <h3 id="map-header">
                         <span class="label">
                             <svg class="svg-inline--fa fa-map fa-w-18" aria-hidden="true" data-prefix="far" data-icon="map" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M508.505 36.17L381.517 92.576 207.179 34.463a47.992 47.992 0 0 0-34.674 1.674l-144 64A48 48 0 0 0 0 144v287.967c0 34.938 35.991 57.864 67.495 43.863l126.988-56.406 174.339 58.113a47.992 47.992 0 0 0 34.674-1.674l144-64A48 48 0 0 0 576 368V80.033c0-34.938-35.991-57.864-67.495-43.863zM360 424l-144-48V88l144 48v288zm-312 8V144l120-53.333v288L48 432zm480-64l-120 53.333v-288L528 80v288z"></path></svg>
@@ -86,9 +87,9 @@
                     <div id="map-container">
                         <p id="map" tabindex="0"></p>
                     </div>
-                </div>
+                </section>
 
-                <div>
+                <section>
                     <h3 id="hours-header">
                         <span class="label">
                             <svg class="svg-inline--fa fa-clock fa-w-16" aria-hidden="true" data-prefix="far" data-icon="clock" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg>
@@ -97,7 +98,7 @@
                     </h3>
 
                     <table id="restaurant-hours"></table>
-                </div>
+                </section>
 
             </section>
 
@@ -116,7 +117,7 @@
                         <button id="btn-show-form" class="btn btn-text">Leave a review</button>
                     </h4>
                 
-                    <form class="review" action="#" id="new-review-form" novalidate style="display: none;">
+                    <form aria-live="polite" class="review" action="#" id="new-review-form" novalidate style="display: none;">
                 
                         <!-- NAME -->
                         <fieldset>

@@ -21,7 +21,7 @@ const render = (document, observer, restaurant, setIsFavoriteRestaurant) => {
     const article = document.createElement('article');
     li.append(article);
 
-    const info = document.createElement('section');
+    const info = document.createElement('div');
     info.className = 'restaurant-info'; {
 
         // image
